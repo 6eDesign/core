@@ -1,5 +1,13 @@
 # @6edesign/cli
 
+## 0.1.3
+
+### Patch Changes
+
+- 6c56729: fix: cicd
+- Updated dependencies [6c56729]
+  - @6edesign/cicd@0.0.3
+
 ## 0.1.2
 
 ### Patch Changes
