@@ -10,8 +10,7 @@
     "lint": "turbo run lint",
     "check-types": "turbo run check-types",
     "release": "changeset publish",
-    "version": "changeset version",
-    "changesets": "changesets"
+    "version": "changeset version"
   },
   "devDependencies": {
     "turbo": "^2.0.0",
