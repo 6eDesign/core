@@ -1,5 +1,11 @@
 # @6edesign/tracing
 
+## 0.2.2
+
+### Patch Changes
+
+- 1e24761: fix: cicd
+
 ## 0.2.1
 
 ### Patch Changes

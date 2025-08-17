@@ -1,5 +1,13 @@
 # @6edesign/cicd
 
+## 0.0.2
+
+### Patch Changes
+
+- 1e24761: fix: cicd
+- Updated dependencies [1e24761]
+  - @6edesign/cicd-core@1.0.2
+
 ## 0.0.1
 
 ### Patch Changes
