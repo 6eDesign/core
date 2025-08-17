@@ -1,0 +1,64 @@
+{
+  "name": "@6edesign/microservice",
+  "version": "0.2.0",
+  "type": "module",
+  "types": "types/index.d.ts",
+  "sideEffects": false,
+  "bin": "./cli.js",
+  "exports": {
+    ".": {
+      "import": "./index.js"
+    },
+    "./router": {
+      "import": "./lib/router.js"
+    },
+    "./client": {
+      "import": "./lib/client.js"
+    },
+    "./messenger-client": {
+      "import": "./lib/messageClient.js"
+    },
+    "./zod": {
+      "import": "./lib/zod.js"
+    }
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "npx -p typescript tsc ./index.js --declaration --allowJs --emitDeclarationOnly --skipLibCheck --outDir types",
+    "lint": "echo 'Add lint script here'"
+  },
+  "devDependencies": {
+    "@6edesign/eslint-config": "workspace:*",
+    "ioredis": "^5.3.2",
+    "mocha": "^10.2.0",
+    "supertest": "^6.3.4"
+  },
+  "dependencies": {
+    "@asteasolutions/zod-to-openapi": "^6.3.1",
+    "@influxdata/influxdb-client": "^1.33.2",
+    "@opentelemetry/api": "^1.7.0",
+    "@opentelemetry/auto-instrumentations-node": "^0.41.1",
+    "@opentelemetry/exporter-trace-otlp-http": "^0.48.0",
+    "@opentelemetry/sdk-node": "^0.48.0",
+    "@6edesign/messenger": "workspace:*",
+    "@6edesign/tracing": "workspace:*",
+    "axios": "^1.6.5",
+    "body-parser": "^1.20.2",
+    "bull": "^4.12.2",
+    "compression": "^1.8.0",
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "express-winston": "^4.2.0",
+    "meow": "^13.1.0",
+    "response-time": "^2.3.2",
+    "winston": "^3.17.0",
+    "zod": "^3.22.4"
+  },
+  "eslintConfig": {
+    "extends": [
+      "@6edesign/eslint-config/library.js"
+    ]
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "name": "@6edesign/cli",
+  "version": "0.1.0",
+  "description": "CLI for the Stacker framework",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "bin": {
+    "stacker": "dist/index.mjs"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "dev": "tsdown --watch --sourcemap src/index.ts",
+    "build": "tsdown --sourcemap src/index.ts",
+    "start": "node dist/index.js",
+    "test": "vitest run --dir test"
+  },
+  "dependencies": {
+    "@dagrejs/graphlib": "^2.2.4",
+    "@dagrejs/graphlib-dot": "^1.0.2",
+    "@octokit/rest": "^18.0.0",
+    "@pulumi/docker": "^4.8.0",
+    "@pulumi/docker-build": "^0.0.12",
+    "@pulumi/pulumi": "^3.187.0",
+    "@6edesign/cicd": "workspace:*",
+    "chalk": "^5.3.0",
+    "commander": "^12.1.0",
+    "execa": "^9.6.0",
+    "fast-glob": "^3.3.2",
+    "inquirer": "^9.2.23",
+    "inquirer-autocomplete-prompt": "^3.0.0",
+    "js-yaml": "^4.1.0",
+    "ora": "^8.0.1",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@6edesign/tsconfig": "workspace:*",
+    "@types/inquirer": "^9.0.7",
+    "@types/js-yaml": "^4.0.9",
+    "@types/node": "^20.12.12",
+    "tsdown": "^0.13.0",
+    "typescript": "^5.4.5",
+    "vitest": "^1.6.0"
+  }
+}

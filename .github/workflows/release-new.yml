@@ -1,0 +1,23 @@
+name: Release (New)
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  release_and_deploy:
+    uses: ./.github/workflows/release-and-deploy.yml
+    with:
+      node-version: '20'
+      pnpm-version: '8'
+      base-branch: 'main'
+    secrets:
+      github-token: ${{ secrets.GITHUB_TOKEN }}
+      NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+      DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}

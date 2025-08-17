@@ -1,0 +1,23 @@
+{
+  "name": "@6edesign/core-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "packageManager": "pnpm@8.15.9",
+  "description": "Shared packages and reusable workflows for 6edesign projects.",
+  "scripts": {
+    "build": "turbo run build",
+    "test": "turbo run test",
+    "lint": "turbo run lint",
+    "check-types": "turbo run check-types",
+    "release": "changeset publish",
+    "version": "changeset version",
+    "changesets": "changesets"
+  },
+  "devDependencies": {
+    "turbo": "^2.0.0",
+    "@changesets/cli": "^2.27.1"
+  },
+  "workspaces": [
+    "packages/*"
+  ]
+}

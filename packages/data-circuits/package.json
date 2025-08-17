@@ -1,0 +1,42 @@
+{
+  "name": "@6edesign/data-circuits",
+  "version": "0.0.0",
+  "type": "module",
+  "types": "types/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./index.js"
+    },
+    "./circuit": {
+      "import": "./lib/circuits.js"
+    }
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "npx -p typescript tsc ./index.js --declaration --allowJs --emitDeclarationOnly --skipLibCheck --outDir types",
+    "test": "mocha **/*.spec.js --exit",
+    "lint": "echo 'Add lint script here'"
+  },
+  "devDependencies": {
+    "@6edesign/eslint-config": "workspace:*",
+    "ioredis-mock": "^8.9.0",
+    "mocha": "^10.2.0",
+    "sinon": "^18.0.0",
+    "supertest": "^6.3.4"
+  },
+  "dependencies": {
+    "axios": "^1.6.5",
+    "express": "^4.18.2",
+    "ioredis": "^5.4.1",
+    "millisecond": "^0.1.2",
+    "redlock": "^5.0.0-beta.2",
+    "zod": "^3.22.4"
+  },
+  "eslintConfig": {
+    "extends": [
+      "@6edesign/eslint-config/library.js"
+    ]
+  }
+}

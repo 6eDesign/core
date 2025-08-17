@@ -1,0 +1,35 @@
+{
+  "name": "@6edesign/tracing",
+  "version": "0.2.0",
+  "type": "module",
+  "types": "types/index.d.ts",
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "npx -p typescript tsc ./index.js --declaration --allowJs --emitDeclarationOnly --skipLibCheck --outDir types",
+    "lint": "echo 'Add lint script here'"
+  },
+  "devDependencies": {
+    "@6edesign/eslint-config": "workspace:*",
+    "mocha": "^10.2.0",
+    "supertest": "^6.3.4"
+  },
+  "dependencies": {
+    "@opentelemetry/api": "^1.7.0",
+    "@opentelemetry/auto-instrumentations-node": "^0.41.1",
+    "@opentelemetry/exporter-prometheus": "^0.48.0",
+    "@opentelemetry/exporter-trace-otlp-http": "^0.48.0",
+    "@opentelemetry/sdk-metrics": "^1.21.0",
+    "@opentelemetry/sdk-node": "^0.48.0",
+    "@opentelemetry/sdk-trace-node": "^1.21.0",
+    "axios": "^1.6.5",
+    "express": "^4.18.2",
+    "zod": "^3.22.4"
+  },
+  "eslintConfig": {
+    "extends": [
+      "@6edesign/eslint-config/library.js"
+    ]
+  }
+}

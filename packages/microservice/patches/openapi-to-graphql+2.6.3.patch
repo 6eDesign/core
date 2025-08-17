@@ -1,0 +1,49 @@
+diff --git a/node_modules/openapi-to-graphql/dist/index.mjs b/node_modules/openapi-to-graphql/dist/index.mjs
+index 9a1fee0..73d2602 100644
+--- a/node_modules/openapi-to-graphql/dist/index.mjs
++++ b/node_modules/openapi-to-graphql/dist/index.mjs
+@@ -3,9 +3,9 @@ import { GraphQLUpload } from 'graphql-upload';
+ import { GraphQLJSON, GraphQLBigInt } from 'graphql-scalars';
+ import { convertObj } from 'swagger2openapi';
+ import { validate } from 'oas-validator';
+-import debug, { debug as debug$1 } from 'debug';
++import debug from 'debug';
+ import { JsonPointer } from 'json-ptr';
+-import { singular } from 'pluralize';
++import pluralize from 'pluralize';
+ import stream from 'stream';
+ import { JSONPath } from 'jsonpath-plus';
+ import { get } from 'jsonpointer';
+@@ -688,7 +688,7 @@ function isIdParam(part) {
+     return /^{.*(id|name|key).*}$/gi.test(part);
+ }
+ function isSingularParam(part, nextPart) {
+-    return `\{${singular(part)}\}` === nextPart;
++    return `\{${pluralize.singular(part)}\}` === nextPart;
+ }
+ /**
+  * Infers a resource name from the given URL path.
+@@ -701,7 +701,7 @@ function inferResourceNameFromPath(path) {
+         if (!/{/g.test(part)) {
+             if (parts[i + 1] &&
+                 (isIdParam(parts[i + 1]) || isSingularParam(part, parts[i + 1]))) {
+-                return path + capitalize(singular(part));
++                return path + capitalize(pluralize.singular(part));
+             }
+             else {
+                 return path + capitalize(part);
+@@ -1258,10 +1258,10 @@ function generateOperationId(method, path) {
+ 
+ // Copyright IBM Corp. 2018. All Rights Reserved.
+ const pubsub = new PubSub();
+-const translationLog$1 = debug$1('translation');
+-const httpLog$1 = debug$1('http');
+-const pubsubLog = debug$1('pubsub');
+-const uploadLog = debug$1('fileUpload');
++const translationLog$1 = debug('translation');
++const httpLog$1 = debug('http');
++const pubsubLog = debug('pubsub');
++const uploadLog = debug('fileUpload');
+ // OAS runtime expression reference locations
+ const RUNTIME_REFERENCES = ['header.', 'query.', 'path.', 'body'];
+ const OPENAPI_TO_GRAPHQL = '_openAPIToGraphQL';

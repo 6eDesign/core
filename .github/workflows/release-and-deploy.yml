@@ -1,0 +1,205 @@
+name: Release and Deploy
+
+on:
+  workflow_call:
+    inputs:
+      node-version:
+        required: true
+        type: string
+        description: 'Node.js version to use'
+      pnpm-version:
+        required: true
+        type: string
+        description: 'pnpm version to use'
+      base-branch:
+        required: true
+        type: string
+        description: 'The base branch for versioning (e.g., main)'
+      dry-run:
+        required: false
+        type: boolean
+        description: 'If true, run the release process without actually publishing'
+        default: false
+    secrets:
+      github-token:
+        required: true
+        description: 'GitHub token for changesets/action to interact with GitHub API'
+      NPM_TOKEN:
+        required: true
+        description: 'NPM token for publishing packages'
+      DOCKER_USERNAME:
+        required: true
+      DOCKER_PASSWORD:
+        required: true
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    outputs: 
+      published-packages: ${{ steps.changesets.outputs.publishedPackages }}
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ inputs.node-version }}
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: ${{ inputs.pnpm-version }}
+          run_install: false
+
+      - name: Get pnpm store directory
+        id: pnpm-cache
+        run: |
+          echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
+
+      - name: Setup pnpm cache
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: Install Dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: List Changesets
+        run: ls -la .changeset
+
+      - name: Create Release Pull Request or Publish
+        id: changesets
+        uses: changesets/action@v1
+        with:
+          publish: ${{ !inputs.dry-run && 'pnpm release' || '' }}
+          version: pnpm version
+          commit: "ci: version packages"
+          title: "ci: version packages"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+  generate-matrix:
+    name: Generate Deployment Matrix
+    runs-on: ubuntu-latest
+    needs: release
+    if: ${{ needs.release.outputs.published-packages != '[]' }}
+    outputs:
+      matrix: ${{ steps.generate-matrix.outputs.matrix }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ inputs.node-version }}
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: ${{ inputs.pnpm-version }}
+          run_install: false
+
+      - name: Get pnpm store directory
+        id: pnpm-cache
+        run: |
+          echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
+
+      - name: Setup pnpm cache
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: Install Dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build @6edesign/cli
+        run: pnpm turbo build --filter=@6edesign/cli
+
+      - name: Re-install Dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Generate Matrix
+        id: generate-matrix
+        run: |
+          PUBLISHED_PACKAGES_JSON='${{ needs.release.outputs.published-packages }}'
+          MATRIX_OUTPUT=$(pnpm exec stacker generate-workflow-matrix --published-packages "$PUBLISHED_PACKAGES_JSON")
+          echo "matrix=$MATRIX_OUTPUT" >> $GITHUB_OUTPUT
+
+  deploy-environment:
+    name: Deploy ${{ matrix.package_name }} to ${{ matrix.env_name }}
+    runs-on: ubuntu-latest
+    needs: generate-matrix
+    environment: ${{ matrix.env_name }}
+    strategy: 
+      matrix: ${{ fromJson(needs.generate-matrix.outputs.matrix) }}
+      max-parallel: 1
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ inputs.node-version }}
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: ${{ inputs.pnpm-version }}
+          run_install: false
+
+      - name: Get pnpm store directory
+        id: pnpm-cache
+        run: |
+          echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
+
+      - name: Setup pnpm cache
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: Install Dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build @6edesign/cli
+        run: pnpm turbo build --filter=@6edesign/cli
+
+      - name: Re-install Dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Wait for dependent jobs
+        if: ${{ matrix.needs[0] }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: pnpm exec stacker workflow-wait-on-jobs --jobs '${{ toJSON(matrix.needs) }}'
+
+      - name: Deploy Application
+        run: |
+          pnpm stacker deploy --workspace=${{ matrix.package_name }} --environment=${{ matrix.env_name }} --version=${{ matrix.package_version }}
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
