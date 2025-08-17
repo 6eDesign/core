@@ -1,5 +1,14 @@
 # @6edesign/microservice
 
+## 0.2.3
+
+### Patch Changes
+
+- 6c56729: fix: cicd
+- Updated dependencies [6c56729]
+  - @6edesign/messenger@0.2.3
+  - @6edesign/tracing@0.2.3
+
 ## 0.2.2
 
 ### Patch Changes
