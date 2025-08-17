@@ -82,7 +82,6 @@ jobs:
         uses: changesets/action@v1
         with:
           publish: ${{ !inputs.dry-run && 'pnpm release' || '' }}
-          version: pnpm version
           commit: "ci: version packages"
           title: "ci: version packages"
         env:
