@@ -9,7 +9,7 @@
     "test": "turbo run test",
     "lint": "turbo run lint",
     "check-types": "turbo run check-types",
-    "release": "changeset publish",
+    "release": "turbo run build && changeset publish",
     "version": "changeset version"
   },
   "devDependencies": {
