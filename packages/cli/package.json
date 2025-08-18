@@ -35,7 +35,7 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
-    "@6edesign/tsconfig": "^0.0.2",
+    "@6edesign/tsconfig": "workspace:^0.0.3",
     "@types/inquirer": "^9.0.7",
     "@types/js-yaml": "^4.0.9",
     "@types/node": "^20.12.12",
