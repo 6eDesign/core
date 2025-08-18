@@ -1,5 +1,13 @@
 # @6edesign/cli
 
+## 0.1.4
+
+### Patch Changes
+
+- de12e8c: fix: cicd/workflow cleanup
+- Updated dependencies [de12e8c]
+  - @6edesign/cicd@0.0.4
+
 ## 0.1.3
 
 ### Patch Changes
