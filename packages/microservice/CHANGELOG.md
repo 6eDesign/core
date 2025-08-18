@@ -1,5 +1,14 @@
 # @6edesign/microservice
 
+## 0.2.4
+
+### Patch Changes
+
+- de12e8c: fix: cicd/workflow cleanup
+- Updated dependencies [de12e8c]
+  - @6edesign/messenger@0.2.4
+  - @6edesign/tracing@0.2.4
+
 ## 0.2.3
 
 ### Patch Changes

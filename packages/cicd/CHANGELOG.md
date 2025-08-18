@@ -1,5 +1,11 @@
 # @6edesign/cicd
 
+## 0.0.4
+
+### Patch Changes
+
+- de12e8c: fix: cicd/workflow cleanup
+
 ## 0.0.3
 
 ### Patch Changes

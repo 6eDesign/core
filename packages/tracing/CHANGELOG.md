@@ -1,5 +1,11 @@
 # @6edesign/tracing
 
+## 0.2.4
+
+### Patch Changes
+
+- de12e8c: fix: cicd/workflow cleanup
+
 ## 0.2.3
 
 ### Patch Changes
