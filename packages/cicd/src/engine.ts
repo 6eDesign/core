@@ -53,6 +53,8 @@ export function createCicdEngine<TPlugins extends Record<string, DeployablePlugi
 	plugins: TPlugins;
 	pulumiConfig?: z.infer<typeof PulumiConfigSchema>;
 }) {
+	console.log('Creating CICD Engine with pulumi config:', options.pulumiConfig);
+	console.log('--- Using local @6edesign/cicd code ---'); // Added log statement
 	const { plugins, pulumiConfig } = options;
 
 	// Collect all deployable schemas for discriminated union
@@ -105,13 +107,16 @@ export function createCicdEngine<TPlugins extends Record<string, DeployablePlugi
 		},
 		defineProjectConfig: (config: {
 			environments: string[];
+			pulumi?: z.infer<typeof PulumiConfigSchema>;
 		}) => {
 			const ProjectConfigSchema = z.object({
-				environments: z.array(z.string())
+				environments: z.array(z.string()),
+				pulumi: PulumiConfigSchema.optional()
 			});
 			return ProjectConfigSchema.parse(config);
 		},
 		createDeployable,
+		createChildCicdEngine,
 		createCommand: (run: string) => ({ type: 'default', run }),
 		plugins: plugins, // Expose the plugins map
 		pulumi: pulumiConfig,

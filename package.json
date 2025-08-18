@@ -15,7 +15,7 @@
   "devDependencies": {
     "turbo": "^2.0.0",
     "@changesets/cli": "^2.27.1",
-    "@6edesign/cli": "workspace:*"
+    "@6edesign/cli": "^0.1.2"
   },
   "workspaces": [
     "packages/*"

@@ -23,7 +23,7 @@
     "@pulumi/docker": "^4.8.0",
     "@pulumi/docker-build": "^0.0.12",
     "@pulumi/pulumi": "^3.187.0",
-    "@6edesign/cicd": "workspace:*",
+    "@6edesign/cicd": "^0.0.2",
     "chalk": "^5.3.0",
     "commander": "^12.1.0",
     "execa": "^9.6.0",
@@ -35,7 +35,7 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
-    "@6edesign/tsconfig": "workspace:*",
+    "@6edesign/tsconfig": "^0.0.2",
     "@types/inquirer": "^9.0.7",
     "@types/js-yaml": "^4.0.9",
     "@types/node": "^20.12.12",

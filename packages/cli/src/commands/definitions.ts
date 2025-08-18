@@ -7,6 +7,10 @@ import { z } from 'zod';
 import { graphCommand } from './graph';
 import { generateWorkflowMatrixCommand } from './generate-workflow-matrix';
 import { workflowWaitOnJobsCommand } from './workflow-wait-on-jobs';
+import { createRequire } from 'module'; // Added
+import * as path from 'path'; // Added
+
+const require = createRequire(import.meta.url); // Added
 
 const deployHandler = async (options: z.infer<typeof deployCommand.options[number]> & { [key: string]: any }) => {
   const workspaceService = new WorkspaceService();
@@ -35,13 +39,13 @@ const deployHandler = async (options: z.infer<typeof deployCommand.options[numbe
     return;
   }
 
-  const { config, engine } = await configService.loadConfig(selectedWorkspace.path);
-  if (!config || !config.deployables || config.deployables.length === 0) {
+  const { projectConfig, workspaceConfig, engine } = await configService.loadConfig(process.cwd(), selectedWorkspace.path);
+  if (!workspaceConfig || !workspaceConfig.config || workspaceConfig.config.deployables.length === 0) {
     console.error(`No deployables found in '${selectedWorkspace.name}'.`);
     return;
   }
 
-  const deployables = config.deployables;
+  const deployables = workspaceConfig.config.deployables;
 
   if (!deployableName) {
     deployableName = await uiService.promptForDeployable(deployables);
@@ -69,7 +73,10 @@ const deployHandler = async (options: z.infer<typeof deployCommand.options[numbe
     }
   }
 
-  await deploymentService.execute(engine, config, deployableName, selectedWorkspace.name, { dryRun: !!options.dryRun, environment: environment, version: options.version, debug: !!options.debug });
+  const cicdPackagePath = path.dirname(require.resolve('@6edesign/cicd/package.json')); // Added
+  const cicd = engine.createChildCicdEngine(engine, { pulumiConfig: projectConfig.pulumi }); // Access from engine
+
+  await deploymentService.execute(cicd, workspaceConfig.config, deployableName, selectedWorkspace.name, { dryRun: !!options.dryRun, environment: environment, version: options.version, debug: !!options.debug, cicdPackagePath: cicdPackagePath }); // Added cicdPackagePath
 };
 
 export const deployCommand = CliCommandSchema.parse({

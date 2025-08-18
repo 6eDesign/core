@@ -177,6 +177,7 @@ export class DeploymentService {
 				return plugin.deployHandler(deployable, context);
 			};
 
+      console.log('Inspecting CICD engine in DeploymentService:', cicd);
 			if (!cicd.pulumi) {
 				throw new Error('Pulumi configuration is missing in the CICD engine.');
 			}

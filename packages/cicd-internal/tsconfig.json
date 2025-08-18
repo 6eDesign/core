@@ -1,8 +1,0 @@
-{
-  "extends": "@6edesign/tsconfig/node.json",
-  "include": ["src", "test"],
-  "compilerOptions": {
-    "outDir": "dist",
-    "rootDir": "."
-  }
-}

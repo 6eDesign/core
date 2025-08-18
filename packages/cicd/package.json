@@ -13,7 +13,7 @@
     "test": "vitest run --dir test"
   },
   "dependencies": {
-    "@6edesign/cicd-core": "workspace:*"
+    "zod": "^4.0.5"
   },
   "peerDependencies": {
     "@pulumi/docker": "^4.8.0",
@@ -27,7 +27,7 @@
     "@pulumi/docker": "^4.8.0",
     "@pulumi/docker-build": "^0.0.12",
     "@pulumi/pulumi": "^3.187.0",
-    "@6edesign/tsconfig": "workspace:*",
+    "@6edesign/tsconfig": "^0.0.2",
     "@vitest/coverage-v8": "^3.2.4",
     "execa": "^9.6.0",
     "tsdown": "^0.13.0",
