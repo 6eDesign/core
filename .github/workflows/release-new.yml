@@ -13,7 +13,7 @@ jobs:
   release_and_deploy:
     uses: ./.github/workflows/release-and-deploy.yml
     with:
-      node-version: '20'
+      node-version: '22'
       pnpm-version: '8'
       base-branch: 'main'
     secrets:
