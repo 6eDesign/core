@@ -45,6 +45,7 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
         with:
+          repository: ${{ github.event.repository.full_name }}
           fetch-depth: 0
 
       - name: Setup Node.js
@@ -107,6 +108,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
+          repository: ${{ github.event.repository.full_name }}
           fetch-depth: 0
 
       - name: Setup Node.js
@@ -155,6 +157,7 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
         with:
+          repository: ${{ github.event.repository.full_name }}
           fetch-depth: 0
 
       - name: Setup Node.js
