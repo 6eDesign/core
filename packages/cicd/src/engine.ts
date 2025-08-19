@@ -53,8 +53,6 @@ export function createCicdEngine<TPlugins extends Record<string, DeployablePlugi
 	plugins: TPlugins;
 	pulumiConfig?: z.infer<typeof PulumiConfigSchema>;
 }) {
-	console.log('Creating CICD Engine with pulumi config:', options.pulumiConfig);
-	console.log('--- Using local @6edesign/cicd code ---'); // Added log statement
 	const { plugins, pulumiConfig } = options;
 
 	// Collect all deployable schemas for discriminated union
