@@ -1,5 +1,11 @@
 # @6edesign/cicd
 
+## 0.0.6
+
+### Patch Changes
+
+- f161553: fix: cicd cleanup
+
 ## 0.0.5
 
 ### Patch Changes
