@@ -2,6 +2,7 @@ import { CliCommandSchema } from '../types/cli';
 import { getDependencyGraph } from '../commands/graph';
 import path from 'path';
 import { promises as fs } from 'fs';
+import { WorkspaceService } from '../services/workspace.service'; // Added
 
 const generateWorkflowMatrixHandler = async (options: {
   publishedPackages: string;
@@ -37,13 +38,30 @@ const generateWorkflowMatrixHandler = async (options: {
     process.exit(1);
   }
 
+  const workspaceService = new WorkspaceService(); // Added
+  const workspaces = await workspaceService.discoverWorkspaces(); // Added
+
+  const deployablePackages = []; // Added
+  for (const pkg of publishedPackages) { // Added
+    const workspace = workspaces.find(w => w.name === pkg.name); // Added
+    if (workspace) { // Added
+      const deployConfigPath = path.join(workspace.path, 'deploy.config.mjs'); // Added
+      try { // Added
+        await fs.access(deployConfigPath, fs.constants.F_OK); // Added
+        deployablePackages.push(pkg); // Added
+      } catch (error) { // Added
+        // Do nothing, package is not deployable
+      } // Added
+    } // Added
+  } // Added
+
   const graph = await getDependencyGraph();
   const jobs = { include: [] as any[] };
   const nameRegex = /\[root\] (.*?)#build/;
 
   const getNodeName = (pkg: string) => `[root] ${pkg}#build`;
 
-  for (const pkg of publishedPackages) {
+  for (const pkg of deployablePackages) { // Changed from publishedPackages
     for (let i = 0; i < environments.length; i++) {
       const env = environments[i];
       const jobName = `deploy-${pkg.name}-${env}`;

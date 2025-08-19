@@ -211,4 +211,17 @@ export class DeploymentService {
 			await this.runPulumi(stack, options.dryRun);
 		}
 	}
+
+	public async executeAll(
+		cicd: CicdEngine,
+		cicdConfig: { deployables: Deployable[] },
+		workspaceName: string,
+		options: { dryRun: boolean; environment: string; version?: string; debug?: boolean }
+	): Promise<void> {
+		const deployablesToExecute = this.topologicalSort(cicdConfig.deployables);
+
+		for (const deployable of deployablesToExecute) {
+			await this.execute(cicd, cicdConfig, deployable.name, workspaceName, options);
+		}
+	}
 }

@@ -51,12 +51,6 @@ const deployHandler = async (options: z.infer<typeof deployCommand.options[numbe
     deployableName = await uiService.promptForDeployable(deployables);
   }
 
-  const selectedDeployable = deployables.find((d: any) => d.name === deployableName);
-  if (!selectedDeployable) {
-    console.error(`Deployable '${deployableName}' not found in '${selectedWorkspace.name}'.`);
-    return;
-  }
-
   if (!environment) {
     environment = await uiService.promptForEnvironment();
   }
@@ -65,18 +59,28 @@ const deployHandler = async (options: z.infer<typeof deployCommand.options[numbe
     return;
   }
 
-  // If no params were provided via CLI, prompt the user
-  if (Object.keys(inputParams).length === 0 && !options.argsJson) {
-    const schema = selectedDeployable.input;
-    if (schema) {
-      inputParams = await uiService.promptForParameters(schema);
-    }
-  }
-
   const cicdPackagePath = path.dirname(require.resolve('@6edesign/cicd/package.json')); // Added
   const cicd = engine.createChildCicdEngine(engine, { pulumiConfig: projectConfig.pulumi }); // Access from engine
 
-  await deploymentService.execute(cicd, workspaceConfig.config, deployableName, selectedWorkspace.name, { dryRun: !!options.dryRun, environment: environment, version: options.version, debug: !!options.debug, cicdPackagePath: cicdPackagePath }); // Added cicdPackagePath
+  if (deployableName === '*') {
+    await deploymentService.executeAll(cicd, workspaceConfig.config, selectedWorkspace.name, { dryRun: !!options.dryRun, environment: environment, version: options.version, debug: !!options.debug, cicdPackagePath: cicdPackagePath });
+  } else {
+    const selectedDeployable = deployables.find((d: any) => d.name === deployableName);
+    if (!selectedDeployable) {
+      console.error(`Deployable '${deployableName}' not found in '${selectedWorkspace.name}'.`);
+      return;
+    }
+
+    // If no params were provided via CLI, prompt the user
+    if (Object.keys(inputParams).length === 0 && !options.argsJson) {
+      const schema = selectedDeployable.input;
+      if (schema) {
+        inputParams = await uiService.promptForParameters(schema);
+      }
+    }
+
+    await deploymentService.execute(cicd, workspaceConfig.config, deployableName, selectedWorkspace.name, { dryRun: !!options.dryRun, environment: environment, version: options.version, debug: !!options.debug, cicdPackagePath: cicdPackagePath }); // Added cicdPackagePath
+  }
 };
 
 export const deployCommand = CliCommandSchema.parse({

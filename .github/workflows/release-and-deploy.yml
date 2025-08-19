@@ -195,7 +195,7 @@ jobs:
 
       - name: Deploy Application
         run: |
-          npx @6edesign/cli deploy --workspace=${{ matrix.package_name }} --environment=${{ matrix.env_name }} --version=${{ matrix.package_version }}
+          npx @6edesign/cli deploy --workspace=${{ matrix.package_name }} --environment=${{ matrix.env_name }} --version=${{ matrix.package_version }} --deployable=*
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
