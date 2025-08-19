@@ -1,5 +1,11 @@
 # @6edesign/cli
 
+## 0.1.6
+
+### Patch Changes
+
+- e7d641d: fix: cicd cleanup
+
 ## 0.1.5
 
 ### Patch Changes
