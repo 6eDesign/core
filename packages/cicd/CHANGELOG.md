@@ -1,5 +1,11 @@
 # @6edesign/cicd
 
+## 0.0.5
+
+### Patch Changes
+
+- 4e0a76f: fix: remove logging statements
+
 ## 0.0.4
 
 ### Patch Changes
