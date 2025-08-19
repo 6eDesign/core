@@ -1,5 +1,11 @@
 # @6edesign/cicd
 
+## 0.0.7
+
+### Patch Changes
+
+- 8e229d1: fix: cicd cleanup
+
 ## 0.0.6
 
 ### Patch Changes
