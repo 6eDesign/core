@@ -10,8 +10,7 @@
     "lint": "turbo run lint",
     "check-types": "turbo run check-types",
     "release": "turbo run build && changeset publish",
-    "version": "changeset version",
-    "postversion": "CI=false pnpm install"
+    "version": "changeset version && CI=false pnpm install"
   },
   "devDependencies": {
     "turbo": "^2.0.0",
