@@ -21,33 +21,33 @@ const fileBuildOptions = z.object({
 const generatedBuildOptions = z.object({
 	type: z.literal('generated').describe('Indicates that the Dockerfile should be generated.'),
 	baseImage: z.string().describe('The base image for the generated Dockerfile.'),
-	osDependenciesInstallCommand:
-		z.string()
-			.optional()
-			.describe(
-				'The full command to install OS-level dependencies (e.g., RUN apt-get update && apt-get install -y curl).'
-			),
+	osDependenciesInstallCommand: z
+		.string()
+		.optional()
+		.describe(
+			'The full command to install OS-level dependencies (e.g., RUN apt-get update && apt-get install -y curl).'
+		),
 	workspace: z.string().describe('The workspace path to include in the generated Dockerfile.'),
 	cmd: z.string().default('node server.js'),
-	env:
-		z.record(z.string(), z.string())
-			.optional()
-			.describe('Environment variables to set in the Dockerfile.')
+	env: z
+		.record(z.string(), z.string())
+		.optional()
+		.describe('Environment variables to set in the Dockerfile.')
 });
 
 export const dockerImagePlugin = createPlugin({
 	input: z.object({
 		name: z.string().describe('A unique name for this deployable Docker image.'),
 		image: z.string().describe('The name of the Docker image to build (e.g., my-app).'),
-		args:
-			z.record(z.string(), z.string())
-				.optional()
-				.describe('Build arguments to pass to Docker.'),
+		args: z
+			.record(z.string(), z.string())
+			.optional()
+			.describe('Build arguments to pass to Docker.'),
 		target: z.string().optional().describe('The build target stage in the Dockerfile.'),
-		additionalTags:
-			z.union([z.string(), z.array(z.string())])
-				.optional()
-				.describe('A single tag or an array of tags for the Docker image.'),
+		additionalTags: z
+			.union([z.string(), z.array(z.string())])
+			.optional()
+			.describe('A single tag or an array of tags for the Docker image.'),
 		registry: z.string().optional().describe('An optional Docker registry to push the image to.'),
 		build: z.union([fileBuildOptions, generatedBuildOptions])
 	}),
@@ -116,7 +116,7 @@ export const dockerImagePlugin = createPlugin({
 			dockerfile: dockerfile,
 			buildArgs: config.args,
 			target: config.target,
-			load: true,
+			load: !!context.dryRun,
 			push: !context.dryRun
 		};
 
