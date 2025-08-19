@@ -31,6 +31,8 @@ on:
         required: true
       DOCKER_PASSWORD:
         required: true
+      PULUMI_CONFIG_PASSPHRASE:
+        required: true
 
 permissions:
   contents: write
@@ -141,6 +143,7 @@ jobs:
       - name: Generate Matrix
         id: generate-matrix
         run: |
+          export PATH=$PNPM_HOME:$PATH
           PUBLISHED_PACKAGES_JSON='${{ needs.release.outputs.published-packages }}'
           MATRIX_OUTPUT=$(npx @6edesign/cli generate-workflow-matrix --published-packages "$PUBLISHED_PACKAGES_JSON")
           echo "matrix=$MATRIX_OUTPUT" >> $GITHUB_OUTPUT
@@ -201,3 +204,4 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+          PULUMI_CONFIG_PASSPHRASE: ${{ secrets.PULUMI_CONFIG_PASSPHRASE }}
