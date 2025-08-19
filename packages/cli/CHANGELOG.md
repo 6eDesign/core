@@ -1,5 +1,12 @@
 # @6edesign/cli
 
+## 0.1.5
+
+### Patch Changes
+
+- Updated dependencies [4e0a76f]
+  - @6edesign/cicd@0.0.5
+
 ## 0.1.4
 
 ### Patch Changes
