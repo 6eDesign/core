@@ -1,5 +1,13 @@
 # @6edesign/cli
 
+## 0.1.8
+
+### Patch Changes
+
+- 8e229d1: fix: cicd cleanup
+- Updated dependencies [8e229d1]
+  - @6edesign/cicd@0.0.7
+
 ## 0.1.7
 
 ### Patch Changes
