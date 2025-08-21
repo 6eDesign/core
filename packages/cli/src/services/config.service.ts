@@ -9,10 +9,8 @@ export class ConfigService {
 		const workspaceConfigPath = path.join(workspacePath, 'deploy.config.mjs');
 
 		try {
-			const [{ default: projectConfig }, { default: workspaceConfig }] = await Promise.all([
-				import(projectConfigPath),
-				import(workspaceConfigPath)
-			]);
+			const { default: projectConfig } = await import(projectConfigPath);
+			const { default: workspaceConfig } = await import(workspaceConfigPath);
 
 			return { projectConfig, workspaceConfig, engine: workspaceConfig.engine };
 		} catch (error) {

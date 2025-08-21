@@ -1,167 +1,139 @@
-import { CliCommandSchema } from '../types/cli';
+import { z } from 'zod';
+import { defineCommand } from '../utils/defineCommand';
 import { WorkspaceService } from '../services/workspace.service';
 import { ConfigService } from '../services/config.service';
 import { DeploymentService } from '../services/deployment.service';
-import { UiService } from '../services/ui.service';
-import { z } from 'zod';
 import { graphCommand } from './graph';
 import { generateWorkflowMatrixCommand } from './generate-workflow-matrix';
 import { workflowWaitOnJobsCommand } from './workflow-wait-on-jobs';
-import { createRequire } from 'module'; // Added
-import * as path from 'path'; // Added
 
-const require = createRequire(import.meta.url); // Added
+export const deployCommand = defineCommand({
+	name: 'deploy',
+	description: 'Deploy a workspace deployable',
+	inputs: {
+		workspace: {
+			schema: z.string(),
+			description: 'The name of the workspace',
+			promptConfig: {
+				type: 'autocomplete',
+				message: 'Select a workspace:',
+				source: async (answersSoFar: any, input: string) => {
+					const workspaceService = new WorkspaceService();
+					const deployableWorkspaces = await workspaceService.discoverDeployableWorkspaces();
+					return deployableWorkspaces.map((w) => ({ name: w.name, value: w.name }));
+				}
+			}
+		},
+		deployable: {
+			schema: z.string(),
+			description: 'The name of the deployable to execute',
+			promptConfig: {
+				type: 'autocomplete',
+				message: 'Select a deployable!!!!!:',
+				source: async (options: { workspace: string }) => {
+					const workspaceService = new WorkspaceService();
+					const workspaces = await workspaceService.discoverWorkspaces();
+					const selectedWorkspace = workspaces.find((w) => w.name === options.workspace);
+					if (!selectedWorkspace) {
+						return [];
+					}
+					const configService = new ConfigService();
+					const { workspaceConfig } = await configService.loadConfig(
+						process.cwd(),
+						selectedWorkspace.path
+					);
+					return workspaceConfig.config.deployables.map((d: any) => ({
+						name: d.name,
+						value: d.name
+					}));
+				}
+			}
+		},
+		environment: {
+			schema: z.string(),
+			description: 'The deployment environment (e.g., dev, staging, prod)',
+			promptConfig: {
+				type: 'list',
+				message: 'Select the deployment environment:',
+				choices: async (options: { workspace: string }) => {
+					const configService = new ConfigService();
+					const { projectConfig } = await configService.loadConfig(process.cwd(), '');
+					return projectConfig.environments;
+				}
+			}
+		},
+		version: {
+			schema: z.string().optional(),
+			description: 'The version to deploy',
+			promptConfig: {
+				type: 'input',
+				message: 'Enter version (optional):'
+			}
+		},
+		dryRun: {
+			schema: z.boolean().optional(),
+			description: 'Perform a dry run without executing external actions'
+		},
+		debug: {
+			schema: z.boolean().optional(),
+			description: 'Enable debug logging'
+		}
+	},
+	handler: async (input) => {
+		input;
+		const workspaceService = new WorkspaceService();
+		const configService = new ConfigService();
+		const deploymentService = new DeploymentService();
 
-const deployHandler = async (options: z.infer<typeof deployCommand.options[number]> & { [key: string]: any }) => {
-  const workspaceService = new WorkspaceService();
-  const configService = new ConfigService();
-  const deploymentService = new DeploymentService();
-  const uiService = new UiService();
+		const workspaces = await workspaceService.discoverWorkspaces();
+		const selectedWorkspace = workspaces.find((w) => w.name === input.workspace);
+		if (!selectedWorkspace) {
+			console.error(`Workspace '${input.workspace}' not found.`);
+			return;
+		}
 
-  let workspaceName = options.workspace;
-  let deployableName = options.deployable;
-  let environment = options.environment;
-  let inputParams = options.arg || {};
+		const { projectConfig, workspaceConfig, engine } = await configService.loadConfig(
+			process.cwd(),
+			selectedWorkspace.path
+		);
+		if (
+			!workspaceConfig ||
+			!workspaceConfig.config ||
+			workspaceConfig.config.deployables.length === 0
+		) {
+			console.error(`No deployables found in '${selectedWorkspace.name}'.`);
+			return;
+		}
 
-  if (options.argsJson) {
-    inputParams = { ...inputParams, ...JSON.parse(options.argsJson) };
-  }
+		const cicd = engine.createChildCicdEngine(engine, { pulumiConfig: projectConfig.pulumi });
 
-  const workspaces = await workspaceService.discoverWorkspaces();
-
-  if (!workspaceName) {
-    workspaceName = await uiService.promptForWorkspace(workspaces);
-  }
-
-  const selectedWorkspace = workspaces.find(w => w.name === workspaceName);
-  if (!selectedWorkspace) {
-    console.error(`Workspace '${workspaceName}' not found.`);
-    return;
-  }
-
-  const { projectConfig, workspaceConfig, engine } = await configService.loadConfig(process.cwd(), selectedWorkspace.path);
-  if (!workspaceConfig || !workspaceConfig.config || workspaceConfig.config.deployables.length === 0) {
-    console.error(`No deployables found in '${selectedWorkspace.name}'.`);
-    return;
-  }
-
-  const deployables = workspaceConfig.config.deployables;
-
-  if (!deployableName) {
-    deployableName = await uiService.promptForDeployable(deployables);
-  }
-
-  if (!environment) {
-    environment = await uiService.promptForEnvironment();
-  }
-  if (!environment) {
-    console.error('Environment is required for deployment.');
-    return;
-  }
-
-  const cicdPackagePath = path.dirname(require.resolve('@6edesign/cicd/package.json')); // Added
-  const cicd = engine.createChildCicdEngine(engine, { pulumiConfig: projectConfig.pulumi }); // Access from engine
-
-  if (deployableName === '*') {
-    await deploymentService.executeAll(cicd, workspaceConfig.config, selectedWorkspace.name, { dryRun: !!options.dryRun, environment: environment, version: options.version, debug: !!options.debug, cicdPackagePath: cicdPackagePath });
-  } else {
-    const selectedDeployable = deployables.find((d: any) => d.name === deployableName);
-    if (!selectedDeployable) {
-      console.error(`Deployable '${deployableName}' not found in '${selectedWorkspace.name}'.`);
-      return;
-    }
-
-    // If no params were provided via CLI, prompt the user
-    if (Object.keys(inputParams).length === 0 && !options.argsJson) {
-      const schema = selectedDeployable.input;
-      if (schema) {
-        inputParams = await uiService.promptForParameters(schema);
-      }
-    }
-
-    await deploymentService.execute(cicd, workspaceConfig.config, deployableName, selectedWorkspace.name, { dryRun: !!options.dryRun, environment: environment, version: options.version, debug: !!options.debug, cicdPackagePath: cicdPackagePath }); // Added cicdPackagePath
-  }
-};
-
-export const deployCommand = CliCommandSchema.parse({
-  name: 'deploy',
-  description: 'Deploy a workspace deployable',
-  options: [
-    {
-      name: '--workspace <name>',
-      description: 'The name of the workspace',
-      type: 'string',
-      required: false, // Will be prompted if missing
-      prompt: {
-        type: 'autocomplete',
-        message: 'Select a workspace:',
-        // choices will be dynamically populated by the command builder
-      },
-    },
-    {
-      name: '--deployable <name>',
-      description: 'The name of the deployable to execute',
-      type: 'string',
-      required: false, // Will be prompted if missing
-      prompt: {
-        type: 'autocomplete',
-        message: 'Select a deployable:',
-        // choices will be dynamically populated by the command builder
-      },
-    },
-    {
-      name: '--version <version>',
-      description: 'The version to deploy',
-      type: 'string',
-      required: false,
-      prompt: {
-        type: 'input',
-        message: 'Enter version (optional):',
-      },
-    },
-    {
-      name: '--arg <key=value>',
-      description: 'An argument for the deployable (can be used multiple times)',
-      type: 'object',
-      variadic: true,
-      parser: (value: string, previous: { [key: string]: string } = {}) => {
-        const [key, val] = value.split('=');
-        previous[key] = val;
-        return previous;
-      },
-      required: false,
-    },
-    {
-      name: '--args-json <json>',
-      description: 'A JSON string of arguments for the deployable',
-      type: 'string',
-      required: false,
-    },
-    {
-      name: '--dry-run',
-      description: 'Perform a dry run without executing external actions',
-      type: 'boolean',
-      required: false,
-    },
-    {
-      name: '--debug',
-      description: 'Enable debug logging',
-      type: 'boolean',
-      required: false,
-    },
-    {
-      name: '--environment <env>',
-      description: 'The deployment environment (e.g., dev, staging, prod)',
-      type: 'string',
-      required: false, // Will be prompted if missing
-      prompt: {
-        type: 'list',
-        message: 'Select the deployment environment:',
-        choices: ['dev', 'staging', 'prod'], // Example choices, could be dynamic
-      },
-    },
-  ],
-  handler: deployHandler,
+		if (input.deployable === '*') {
+			await deploymentService.executeAll(cicd, workspaceConfig.config, selectedWorkspace.name, {
+				dryRun: !!input.dryRun,
+				environment: input.environment,
+				version: input.version,
+				debug: !!input.debug
+			});
+		} else {
+			await deploymentService.execute(
+				cicd,
+				workspaceConfig.config,
+				input.deployable,
+				selectedWorkspace.name,
+				{
+					dryRun: !!input.dryRun,
+					environment: input.environment,
+					version: input.version,
+					debug: !!input.debug
+				}
+			);
+		}
+	}
 });
 
-export const commands = [deployCommand, graphCommand, generateWorkflowMatrixCommand, workflowWaitOnJobsCommand];
+export const commands = [
+	deployCommand,
+	graphCommand,
+	generateWorkflowMatrixCommand,
+	workflowWaitOnJobsCommand
+];

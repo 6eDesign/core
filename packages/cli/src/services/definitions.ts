@@ -88,7 +88,7 @@ const deployHandler = async (
 
 export const deployCommand = CliCommandSchema.parse({
 	name: 'deploy',
-	description: 'Deploy a workspace deployable',
+	description: 'Deploy a workspace deployable!!',
 	options: [
 		{
 			name: '--workspace <name>',

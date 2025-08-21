@@ -54,9 +54,17 @@ export class UiService {
     return command;
   }
 
-  public async prompt<T>(options: z.infer<typeof InquirerPromptSchema> & { name: string }): Promise<T> {
-    const { [options.name]: answer } = await inquirer.prompt([options]);
-    return answer;
+  public async prompt<T>(questions: (z.infer<typeof InquirerPromptSchema> & { name: string })[]): Promise<T> {
+    const processedQuestions = questions.map(options => {
+      const promptOptions = { ...options };
+      if (promptOptions.type === 'autocomplete' && typeof promptOptions.source === 'function') {
+        delete promptOptions.choices;
+      }
+      return promptOptions;
+    });
+
+    const answers = await inquirer.prompt(processedQuestions);
+    return answers as T;
   }
 
   public async promptForParameters(schema: z.ZodObject<any, any, any>): Promise<any> {

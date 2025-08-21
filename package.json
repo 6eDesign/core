@@ -2,9 +2,13 @@
   "name": "@6edesign/core-monorepo",
   "version": "1.0.0",
   "private": true,
-  "packageManager": "pnpm@8.15.9",
+  "packageManager": "pnpm@10.15.0",
+  "pnpm": {
+    "neverBuiltDependencies": []
+  },
   "description": "Shared packages and reusable workflows for 6edesign projects.",
   "scripts": {
+    "dev": "turbo run dev",
     "build": "turbo run build",
     "test": "turbo run test",
     "lint": "turbo run lint",
@@ -13,9 +17,10 @@
     "version": "changeset version && CI=false pnpm install"
   },
   "devDependencies": {
-    "turbo": "^2.0.0",
+    "@6edesign/cli": "^0.1.2",
     "@changesets/cli": "^2.27.1",
-    "@6edesign/cli": "^0.1.2"
+    "turbo": "^2.0.0",
+    "typescript": "^5.9.2"
   },
   "workspaces": [
     "packages/*"

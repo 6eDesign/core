@@ -30,7 +30,7 @@
     "lint": "echo 'Add lint script here'"
   },
   "devDependencies": {
-    "@6edesign/eslint-config": "^0.2.2",
+    "@6edesign/eslint-config": "workspace:^0.2.2",
     "ioredis": "^5.3.2",
     "mocha": "^10.2.0",
     "supertest": "^6.3.4"
