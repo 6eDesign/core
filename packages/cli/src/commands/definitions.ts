@@ -55,7 +55,7 @@ export const deployCommand = defineCommand({
 			promptConfig: {
 				type: 'list',
 				message: 'Select the deployment environment:',
-				choices: async (options: { workspace: string }) => {
+				choices: async () => {
 					const configService = new ConfigService();
 					const { projectConfig } = await configService.loadConfig(process.cwd(), '');
 					return projectConfig.environments;

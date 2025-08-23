@@ -1,4 +1,4 @@
-export function getDistributedPoolFactory(redisClient: Client): <T extends import("./promisePools.memory.js").PoolPromise>(prom: T, { id, timeout }: import("./promisePools.memory.js").PoolOptions) => {
+export function getDistributedPoolFactory(redisClient: Client): (prom: T, { id, timeout }: import("./promisePools.memory.js").PoolOptions) => {
     /**
      * @param {Parameters<T>} args
      * @returns {Promise<ReturnType<T>>}
