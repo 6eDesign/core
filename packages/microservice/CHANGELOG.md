@@ -1,5 +1,11 @@
 # @6edesign/microservice
 
+## 0.2.8
+
+### Patch Changes
+
+- 12d02e8: fix: jsdoc annotation syntax updates
+
 ## 0.2.7
 
 ### Patch Changes
