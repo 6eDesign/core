@@ -21,7 +21,7 @@ export class MicroService {
      * @param {MicroServiceOptions} options
      * @memberof MicroService
      */
-    constructor({ port, name, useCors, useCompression, logger, eventBus, }: MicroServiceOptions);
+    constructor({ port, name, useCors, useCompression, logger, eventBus }: MicroServiceOptions);
     port: number;
     name: string;
     app: any;
@@ -30,11 +30,11 @@ export class MicroService {
     logger: Logger;
     /**
      * @template TInput, TOutput
-     * @param {import('./router.js').BaseOptions<TInput, TOutput>} route
+     * @param {import('./router').BaseOptions<TInput, TOutput>} route
      * @param {(input: TInput) => Promise<TOutput>} resolver
      * @memberof MicroService
      */
-    addRoute<TInput, TOutput>(route: import("./router.js").BaseOptions<TInput, TOutput>, resolver: (input: TInput) => Promise<TOutput>): void;
+    addRoute<TInput, TOutput>(route: import("./router").BaseOptions<TInput, TOutput>, resolver: (input: TInput) => Promise<TOutput>): void;
     /**
      * @param {object} msg
      * @param {string} [msg.key]
@@ -66,4 +66,4 @@ export type MicroServiceOptions = {
     logger?: Logger;
     eventBus?: import("@6edesign/messenger").BaseDistributedEventBus;
 };
-import { OpenApiGeneratorV3 } from "@asteasolutions/zod-to-openapi";
+import { OpenApiGeneratorV3 } from '@asteasolutions/zod-to-openapi';

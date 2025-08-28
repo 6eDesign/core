@@ -12,7 +12,7 @@ export type CircuitOptions<T, TInitial extends T | undefined> = {
     name: string;
     getter: () => Promise<T>;
     initialValue?: TInitial;
-    store?: import("./stores.js").PersistenceLayer<T>;
+    store?: import("./stores").PersistenceLayer<T>;
     bad?: number;
     stale?: number;
     staleOnError?: boolean;
@@ -20,7 +20,7 @@ export type CircuitOptions<T, TInitial extends T | undefined> = {
     logger?: any;
     setter?: (val: T) => Promise<T>;
     equalityChecker?: (a: T, b: T) => boolean;
-    poolCreator?: import("./promisePools.memory.js").PoolCreator<(refresh?: boolean) => Promise<T>>;
+    poolCreator?: import("./promisePools.memory").PoolCreator<(refresh?: boolean) => Promise<T>>;
     /**
      * the timeout used by the pool creator
      */
@@ -39,7 +39,7 @@ export type DerivedCircuitOptions<TOutput, TSources extends Record<string, Circu
     sources: TSources;
     deriver: (sources: UnwrappedSources<TSources>) => Promise<TOutput>;
     initialValue?: TInitial;
-    store?: import("./stores.js").PersistenceLayer<TOutput>;
+    store?: import("./stores").PersistenceLayer<TOutput>;
     logger?: any;
     equalityChecker?: (a: any, b: any) => boolean;
 };

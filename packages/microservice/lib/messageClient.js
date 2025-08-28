@@ -9,7 +9,7 @@ import { getRouteKey } from './router';
  * @template TInput, TOutput
  * @param {string} channel
  * @param {SDKOptions} sdkOptions
- * @param {import('./router.js').BaseOptions<TInput, TOutput>} route
+ * @param {import('./router').BaseOptions<TInput, TOutput>} route
  * @returns {(input: TInput) => Promise<void>}
  */
 const clientMethod = (channel, sdkOptions, route) => {
@@ -31,7 +31,7 @@ const clientMethod = (channel, sdkOptions, route) => {
 export const client = (channel, sdkOptions) => {
 	/**
 	 * @template TInput, TOutput
-	 * @param {import('./router.js').BaseOptions<TInput, TOutput>} route
+	 * @param {import('./router').BaseOptions<TInput, TOutput>} route
 	 */
 	return (route) => clientMethod(channel, sdkOptions, route);
 };

@@ -26,7 +26,7 @@ import { createMemoryStore } from "./stores.memory.js";
  * @property {string} name
  * @property {() => Promise<T>} getter
  * @property {TInitial} [initialValue]
- * @property {import('./stores.js').PersistenceLayer<T>} [store = createMemoryStore()]
+ * @property {import('./stores').PersistenceLayer<T>} [store = createMemoryStore()]
  * @property {number} [bad]
  * @property {number} [stale]
  * @property {boolean} [staleOnError]
@@ -34,7 +34,7 @@ import { createMemoryStore } from "./stores.memory.js";
  * @property {Object} [logger]
  * @property {(val: T) => Promise<T>} [setter]
  * @property {(a: T, b: T) => boolean} [equalityChecker]
- * @property {import('./promisePools.memory.js').PoolCreator<(refresh?: boolean) => Promise<T>>} [poolCreator]
+ * @property {import('./promisePools.memory').PoolCreator<(refresh?: boolean) => Promise<T>>} [poolCreator]
  * @property {number} [poolTimeout] the timeout used by the pool creator
  * @property {boolean} [live] when true, the circuit subscribes to the cache stream
  */
@@ -63,7 +63,7 @@ export const createCircuit = ({
 }) => {
   if (!name || !getter) throw new Error("name and getter are required");
 
-  /** @type {import('./stores.js').WrappedValue<TOutput>|undefined} */
+  /** @type {import('./stores').WrappedValue<TOutput>|undefined} */
   let value =
     typeof initialValue === "undefined"
       ? undefined
@@ -97,7 +97,7 @@ export const createCircuit = ({
   };
 
   /**
-   * @param {import('./stores.js').WrappedValue<TOutput>} data
+   * @param {import('./stores').WrappedValue<TOutput>} data
    */
   const ingestValueFromStream = async ({ data, bad, stale }) => {
     if (!equalityChecker(lastValue, data)) informSubscribers(data);
@@ -225,7 +225,7 @@ export const createCircuit = ({
  * @property {TSources} sources
  * @property {(sources: UnwrappedSources<TSources>) => Promise<TOutput>} deriver
  * @property {TInitial} [initialValue]
- * @property {import('./stores.js').PersistenceLayer<TOutput>} [store = createMemoryStore()]
+ * @property {import('./stores').PersistenceLayer<TOutput>} [store = createMemoryStore()]
  * @property {Object} [logger=console]
  * @property {(a,b) => boolean} [equalityChecker=(a,b)=> a===b]
  */
