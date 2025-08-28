@@ -1,5 +1,11 @@
 # @6edesign/microservice
 
+## 0.2.5
+
+### Patch Changes
+
+- ae5b9c3: fix: tsc generation
+
 ## 0.2.4
 
 ### Patch Changes

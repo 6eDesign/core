@@ -1,5 +1,11 @@
 # @6edesign/cicd
 
+## 0.0.8
+
+### Patch Changes
+
+- ae5b9c3: fix: tsc generation
+
 ## 0.0.7
 
 ### Patch Changes
