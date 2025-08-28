@@ -1,5 +1,11 @@
 # @6edesign/microservice
 
+## 0.2.9
+
+### Patch Changes
+
+- 4ec48bb: fix: jsdoc
+
 ## 0.2.8
 
 ### Patch Changes
