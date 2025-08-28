@@ -3,7 +3,7 @@
  * @property {import('@6edesign/messenger').BaseDistributedEventBus} eventBus
  */
 
-import { getRouteKey } from './router.js';
+import { getRouteKey } from './router';
 
 /**
  * @template TInput, TOutput
@@ -13,15 +13,15 @@ import { getRouteKey } from './router.js';
  * @returns {(input: TInput) => Promise<void>}
  */
 const clientMethod = (channel, sdkOptions, route) => {
-  return async (input) => {
-    // validate input, create and send message
-    // allow client to consume all types of errors
-    route.input.parse(input);
-    return sdkOptions.eventBus.send(channel, {
-      key: getRouteKey(route),
-      input,
-    });
-  };
+	return async (input) => {
+		// validate input, create and send message
+		// allow client to consume all types of errors
+		route.input.parse(input);
+		return sdkOptions.eventBus.send(channel, {
+			key: getRouteKey(route),
+			input
+		});
+	};
 };
 
 /**
@@ -29,11 +29,11 @@ const clientMethod = (channel, sdkOptions, route) => {
  * @param {SDKOptions} sdkOptions
  */
 export const client = (channel, sdkOptions) => {
-  /**
-   * @template TInput, TOutput
-   * @param {import('./router.js').BaseOptions<TInput, TOutput>} route
-   */
-  return (route) => clientMethod(channel, sdkOptions, route);
+	/**
+	 * @template TInput, TOutput
+	 * @param {import('./router.js').BaseOptions<TInput, TOutput>} route
+	 */
+	return (route) => clientMethod(channel, sdkOptions, route);
 };
 
 /**
@@ -43,8 +43,8 @@ export const client = (channel, sdkOptions) => {
  * @returns {(sdkOptions: SDKOptions) => T}
  */
 export const messsageClientFactory = (channel, fn) => {
-  return (sdkOptions) => {
-    const t = client(channel, sdkOptions);
-    return fn(t);
-  };
+	return (sdkOptions) => {
+		const t = client(channel, sdkOptions);
+		return fn(t);
+	};
 };

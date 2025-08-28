@@ -13,9 +13,10 @@
     "version": "changeset version && CI=false pnpm install"
   },
   "devDependencies": {
-    "turbo": "^2.0.0",
+    "@6edesign/cli": "^0.1.2",
     "@changesets/cli": "^2.27.1",
-    "@6edesign/cli": "^0.1.2"
+    "turbo": "^2.0.0",
+    "typescript": "^5.9.2"
   },
   "workspaces": [
     "packages/*"
