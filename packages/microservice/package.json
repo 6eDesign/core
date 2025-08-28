@@ -1,6 +1,6 @@
 {
   "name": "@6edesign/microservice",
-  "version": "0.2.5",
+  "version": "0.2.6",
   "type": "module",
   "types": "types/index.d.ts",
   "sideEffects": false,
