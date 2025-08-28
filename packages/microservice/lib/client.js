@@ -51,7 +51,7 @@ export const client = (sdkOptions) => {
 
 /**
  * @template T
- * @param {(t: ReturnType<client>) => T} fn
+ * @param {(t: ReturnType<typeof client>) => T} fn
  * @returns {(sdkOptions: SDKOptions) => T}
  */
 export const clientFactory = (fn) => {
