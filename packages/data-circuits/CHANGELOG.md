@@ -1,5 +1,11 @@
 # @6edesign/data-circuits
 
+## 0.0.5
+
+### Patch Changes
+
+- ae5b9c3: fix: tsc generation
+
 ## 0.0.4
 
 ### Patch Changes

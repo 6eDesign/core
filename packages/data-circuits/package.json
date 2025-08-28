@@ -1,6 +1,6 @@
 {
   "name": "@6edesign/data-circuits",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "type": "module",
   "types": "types/index.d.ts",
   "exports": {
