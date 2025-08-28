@@ -1,5 +1,11 @@
 # @6edesign/data-circuits
 
+## 0.0.6
+
+### Patch Changes
+
+- 12d02e8: fix: jsdoc annotation syntax updates
+
 ## 0.0.5
 
 ### Patch Changes
