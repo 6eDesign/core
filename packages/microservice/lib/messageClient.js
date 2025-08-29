@@ -3,7 +3,7 @@
  * @property {import('@6edesign/messenger').BaseDistributedEventBus} eventBus
  */
 
-import { getRouteKey } from './router';
+import { getRouteKey } from './router.js';
 
 /**
  * @template TInput, TOutput

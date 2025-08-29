@@ -1,6 +1,6 @@
-import { MicroService } from '../lib/microservice';
-// import { STATIC_PRODUCTS } from './data';
-// import { routes } from './routes';
+import { MicroService } from '../lib/microservice.js';
+// import { STATIC_PRODUCTS } from './data.js';
+// import { routes } from './routes.js';
 
 const service = new MicroService({ port: 3000, name: 'test-server' });
 

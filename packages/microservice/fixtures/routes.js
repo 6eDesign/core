@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { createRoute } from '../lib/router';
+import { createRoute } from '../lib/router.js';
 
 const productSchema = z
 	.object({

@@ -1,6 +1,6 @@
-import { routes } from './routes';
+import { routes } from './routes.js';
 
-import { clientFactory } from '../lib/client';
+import { clientFactory } from '../lib/client.js';
 
 export const getSdk = clientFactory((t) => ({
 	getProduct: t(routes.getProducts),
