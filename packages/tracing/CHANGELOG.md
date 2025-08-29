@@ -1,5 +1,11 @@
 # @6edesign/tracing
 
+## 0.2.5
+
+### Patch Changes
+
+- 833887e: fix: jsdoc
+
 ## 0.2.4
 
 ### Patch Changes

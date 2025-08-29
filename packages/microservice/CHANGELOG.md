@@ -1,5 +1,14 @@
 # @6edesign/microservice
 
+## 0.2.10
+
+### Patch Changes
+
+- 833887e: fix: jsdoc
+- Updated dependencies [833887e]
+  - @6edesign/messenger@0.2.5
+  - @6edesign/tracing@0.2.5
+
 ## 0.2.9
 
 ### Patch Changes
