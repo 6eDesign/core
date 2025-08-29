@@ -1,5 +1,11 @@
 # @6edesign/tsconfig
 
+## 0.0.5
+
+### Patch Changes
+
+- 833887e: fix: jsdoc
+
 ## 0.0.4
 
 ### Patch Changes

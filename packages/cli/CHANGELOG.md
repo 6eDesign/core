@@ -1,5 +1,13 @@
 # @6edesign/cli
 
+## 0.1.10
+
+### Patch Changes
+
+- 833887e: fix: jsdoc
+- Updated dependencies [833887e]
+  - @6edesign/cicd@0.0.9
+
 ## 0.1.9
 
 ### Patch Changes

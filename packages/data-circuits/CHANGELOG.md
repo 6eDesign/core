@@ -1,5 +1,11 @@
 # @6edesign/data-circuits
 
+## 0.0.7
+
+### Patch Changes
+
+- 833887e: fix: jsdoc
+
 ## 0.0.6
 
 ### Patch Changes
