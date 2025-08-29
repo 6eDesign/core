@@ -1,5 +1,11 @@
 # @6edesign/microservice
 
+## 0.2.12
+
+### Patch Changes
+
+- 177fac3: fix: jsdoc
+
 ## 0.2.11
 
 ### Patch Changes
