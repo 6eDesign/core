@@ -2,7 +2,7 @@ import axios from 'axios';
 
 /**
  * @template TInput, TOutput
- * @param {import('./router').BaseOptions<TInput, TOutput>} route
+ * @param {import('./router.js').BaseOptions<TInput, TOutput>} route
  * @returns {(input: TInput) => object}
  */
 const getInputSetter = (route) => {
@@ -22,7 +22,7 @@ const getInputSetter = (route) => {
 /**
  * @template TInput, TOutput
  * @param {SDKOptions} sdkOptions
- * @param {import('./router').BaseOptions<TInput, TOutput>} route
+ * @param {import('./router.js').BaseOptions<TInput, TOutput>} route
  * @returns {(input: TInput) => Promise<TOutput>}
  */
 const clientMethod = (sdkOptions, route) => {
@@ -44,7 +44,7 @@ const clientMethod = (sdkOptions, route) => {
 export const client = (sdkOptions) => {
 	/**
 	 * @template TInput, TOutput
-	 * @param {import('./router').BaseOptions<TInput, TOutput>} route
+	 * @param {import('./router.js').BaseOptions<TInput, TOutput>} route
 	 */
 	return (route) => clientMethod(sdkOptions, route);
 };

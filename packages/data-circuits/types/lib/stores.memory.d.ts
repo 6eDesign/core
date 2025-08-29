@@ -23,10 +23,10 @@ export function createMemoryStore<T>(): {
     get(key: string): Promise<import("./stores.js").WrappedValue<T>>;
     /**
      * @param {string} key
-     * @param {import("./stores").WrappedValue<T>} value
+     * @param {import("./stores.js").WrappedValue<T>} value
      * @returns {Promise<void>}
      */
-    set(key: string, value: import("./stores").WrappedValue<T>): Promise<void>;
+    set(key: string, value: import("./stores.js").WrappedValue<T>): Promise<void>;
     /**
      * @param {string} key
      * @returns {Promise<void>}
