@@ -39,19 +39,21 @@ const clientMethod = (sdkOptions, route) => {
 };
 
 /**
+ * @template TInput, TOutput
+ * @typedef {(route: import('./router.js').BaseOptions<TInput, TOutput>) => (input: TInput) => Promise<TOutput>} ClientFunction
+ */
+
+/**
  * @param {SDKOptions} sdkOptions
+ * @returns {ClientFunction}
  */
 export const client = (sdkOptions) => {
-	/**
-	 * @template TInput, TOutput
-	 * @param {import('./router.js').BaseOptions<TInput, TOutput>} route
-	 */
 	return (route) => clientMethod(sdkOptions, route);
 };
 
 /**
  * @template T
- * @param {(t: ReturnType<client>) => T} fn
+ * @param {(t: ClientFunction) => T} fn
  * @returns {(sdkOptions: SDKOptions) => T}
  */
 export const clientFactory = (fn) => {
