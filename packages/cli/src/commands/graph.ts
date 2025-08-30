@@ -1,4 +1,4 @@
-import { CliCommand } from '../types/cli';
+import { defineCommand } from '../utils/defineCommand';
 import { execa } from 'execa';
 import dot from '@dagrejs/graphlib-dot';
 import graphlib from '@dagrejs/graphlib';
@@ -55,37 +55,33 @@ export async function getTopologicalOrder(): Promise<string[]> {
 	return order.flat();
 }
 
-export const graphCommand: CliCommand = {
+export const graphCommand = defineCommand({
 	name: 'graph',
 	description: 'Get information about the workspace dependency graph',
-	options: [],
 	subcommands: [
-		{
+		defineCommand({
 			name: 'order',
 			description: 'Get the deployment order of the workspaces',
-			options: [],
 			handler: async () => {
 				const sorted = await getTopologicalOrder();
 				console.log(JSON.stringify(sorted, null, 2));
 			}
-		},
-		{
+		}),
+		defineCommand({
 			name: 'parallel-order',
 			description: 'Get the parallel deployment order of the workspaces',
-			options: [],
 			handler: async () => {
 				const sorted = await getParallelDeploymentOrder();
 				console.log(JSON.stringify(sorted, null, 2));
 			}
-		},
-		{
+		}),
+		defineCommand({
 			name: 'json',
 			description: 'Get the dependency graph in JSON format',
-			options: [],
 			handler: async () => {
 				const graph = await getDependencyGraph();
 				console.log(JSON.stringify(graphlib.json.write(graph), null, 2));
 			}
-		}
+		})
 	]
-};
+});

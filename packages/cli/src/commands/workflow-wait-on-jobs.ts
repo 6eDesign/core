@@ -1,8 +1,12 @@
-import { CliCommandSchema } from '../types/cli';
+import { defineCommand } from '../utils/defineCommand';
 import { createScmService } from '../services/scm.service';
 import { z } from 'zod';
 
-const workflowWaitOnJobsHandler = async (options: z.infer<typeof workflowWaitOnJobsCommand.options[number]>) => {
+const workflowWaitOnJobsHandler = async (options: {
+  jobs: string;
+  timeout?: number;
+  scm?: string;
+}) => {
   const { GITHUB_REPOSITORY, GITHUB_RUN_ID } = process.env;
 
   if (!GITHUB_REPOSITORY) {
@@ -21,30 +25,22 @@ const workflowWaitOnJobsHandler = async (options: z.infer<typeof workflowWaitOnJ
   await scmService.waitForJobs(owner, repo, runId, jobNames, options.timeout);
 };
 
-export const workflowWaitOnJobsCommand = CliCommandSchema.parse({
+export const workflowWaitOnJobsCommand = defineCommand({
   name: 'workflow-wait-on-jobs',
   description: 'Wait for a set of jobs in the current workflow run to complete.',
-  options: [
-    {
-      name: '--jobs <json>',
+  inputs: {
+    jobs: {
+      schema: z.string(),
       description: 'A JSON array of job names to wait for.',
-      type: 'string',
-      required: true,
     },
-    {
-      name: '--timeout <seconds>',
+    timeout: {
+      schema: z.number().optional(),
       description: 'The timeout in seconds.',
-      type: 'number',
-      required: false,
-      parser: (value: string) => parseInt(value, 10),
     },
-    {
-      name: '--scm <scm>',
+    scm: {
+      schema: z.string().optional().default('github'),
       description: 'The SCM to use (e.g., github).',
-      type: 'string',
-      required: false,
-      default: 'github',
     },
-  ],
+  },
   handler: workflowWaitOnJobsHandler,
 });

@@ -16,9 +16,11 @@ export const InquirerPromptSchema = z.object({
 		'autocomplete'
 	]),
 	message: z.string(),
-	choices: z
-		.array(z.union([z.string(), z.object({ name: z.string(), value: z.any() })]))
-		.optional(),
+	choices: z.union([
+		z.array(z.union([z.string(), z.object({ name: z.string(), value: z.any() })])),
+		z.function().returns(z.promise(z.array(z.union([z.string(), z.object({ name: z.string(), value: z.any() })]))))
+	]).optional(),
+	source: z.function().returns(z.promise(z.array(z.string()))).optional(),
 	default: z.any().optional(),
 	validate: z.function(z.tuple([z.any()]), z.union([z.boolean(), z.string()])).optional(),
 	when: z.function(z.tuple([z.record(z.string(), z.any())]), z.boolean()).optional()
