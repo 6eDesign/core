@@ -2,9 +2,7 @@ import { z } from 'zod';
 import { defineCommand } from '../utils/defineCommand';
 import { promises as fs } from 'fs';
 import path from 'path';
-import { UiService } from '../services/ui.service';
-
-const ui = new UiService();
+import { execa } from 'execa';
 
 const getTemplate = (templateName: string, vars: Record<string, string>) => {
   const templates: Record<string, (vars: Record<string, string>) => string> = {
@@ -58,7 +56,22 @@ export default defineConfig({
 
 > ${name} package
 `,
-    'src/index.ts': () => `console.log('Hello from new package!');
+    'src/index.ts': () => `/**
+ * Adds two numbers.
+ * @param a - The first number.
+ * @param b - The second number.
+ * @returns The sum of the two numbers.
+ */
+export const add = (a: number, b: number): number => a + b;
+`,
+    'test/index.test.ts': () => `import { describe, it, expect } from 'vitest';
+import { add } from '../src';
+
+describe('add', () => {
+  it('should add two numbers', () => {
+    expect(add(1, 2)).toBe(3);
+  });
+});
 `,
   };
   return templates[templateName](vars);
@@ -84,12 +97,16 @@ export const newPackageCommand = defineCommand({
         message: 'Enter the package description:',
       },
     },
+    skipInstall: {
+      schema: z.string().optional(),
+      description: "Skip the automatic 'pnpm install' step by passing 'true'.",
+    },
   },
   handler: async (input) => {
     const { name, description } = input;
     const packageDir = path.join(process.cwd(), 'packages', name);
 
-    ui.spinner.start(`Creating new package '${name}' at ${packageDir}...`);
+    console.log(`Creating new package '${name}' at ${packageDir}...`);
 
     try {
       // Create directories
@@ -105,6 +122,7 @@ export const newPackageCommand = defineCommand({
         'vitest.config.ts',
         'README.md',
         'src/index.ts',
+        'test/index.test.ts',
       ];
 
       for (const fileName of filesToCreate) {
@@ -112,13 +130,18 @@ export const newPackageCommand = defineCommand({
         await fs.writeFile(path.join(packageDir, fileName), content);
       }
 
-      ui.spinner.succeed(`Successfully created package '${name}'!`);
-      ui.print(`Next steps:
-1. Run 'pnpm install' to link the new package.
-2. Start developing in 'packages/${name}/src/index.ts'`);
+      console.log(`Successfully created package '${name}'!`);
+
+      if (input.skipInstall !== 'true') {
+        console.log('Running pnpm install...');
+        await execa('pnpm', ['install'], { stdio: 'inherit' });
+        console.log('Dependencies installed.');
+      } else {
+        console.log('Skipping dependency installation.');
+      }
 
     } catch (error: any) {
-      ui.spinner.fail(`Failed to create package: ${error.message}`);
+      console.error(`Failed to create package: ${error.message}`);
     }
   },
 });

@@ -1,0 +1,22 @@
+{
+  "name": "@6edesign/zrpc",
+  "version": "0.0.0",
+  "description": "A schema-driven microservice library for building robust, type-safe APIs and clients in TypeScript or JavaScript.",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "dev": "tsdown --watch src/index.ts",
+    "build": "tsdown src/index.ts",
+    "test": "vitest run --dir test",
+    "check-types": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@6edesign/tsconfig": "workspace:^",
+    "tsdown": "^0.13.0",
+    "typescript": "^5.4.5",
+    "vitest": "^1.6.0"
+  }
+}

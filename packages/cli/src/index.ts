@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import { Command } from 'commander';
-import { NewCommandBuilder } from './utils/command-builder-new';
+import { CommandBuilder } from './utils/command-builder';
 import { commands } from './commands/definitions';
 import { UiService } from './services/ui.service';
 

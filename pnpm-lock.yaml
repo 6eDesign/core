@@ -354,6 +354,21 @@ importers:
         specifier: ^20.1.4
         version: 20.1.6
 
+  packages/zrpc:
+    devDependencies:
+      '@6edesign/tsconfig':
+        specifier: workspace:^
+        version: link:../tsconfig
+      tsdown:
+        specifier: ^0.13.0
+        version: 0.13.5(typescript@5.9.2)
+      typescript:
+        specifier: ^5.4.5
+        version: 5.9.2
+      vitest:
+        specifier: ^1.6.0
+        version: 1.6.1(@types/node@20.19.11)
+
 packages:
 
   '@6edesign/cicd@0.0.9':
