@@ -9,6 +9,7 @@ import { OpenAPIRegistry, OpenApiGeneratorV3 } from '@asteasolutions/zod-to-open
 import { createHTTPResolver, getRouteKey, RouteOptions } from './router';
 import { BaseDistributedEventBus } from '@6edesign/messenger';
 import { OpenAPIObject } from 'openapi3-ts/oas30';
+import http from 'http';
 
 export interface Logger {
   log: (level: string, message: string) => void;
@@ -34,6 +35,7 @@ export class ZRPCService {
   private readonly logger: Logger;
   private routes: RouteOptions<any, any>[] = [];
   private resolverMap: Record<string, { route: RouteOptions<any, any>; resolver: (input: any) => Promise<any> }> = {};
+  private server?: http.Server;
 
   constructor(options: ZRPCServiceOptions) {
     this.name = options.name;
@@ -105,10 +107,27 @@ export class ZRPCService {
     });
 
     return new Promise((resolve) => {
-      this.app.listen(this.port, () => {
+      this.server = this.app.listen(this.port, () => {
         this.logger.info(`${this.name} service started on port ${this.port}`);
         resolve();
       });
+    });
+  }
+
+  public stop(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      if (this.server) {
+        this.server.close((err) => {
+          if (err) {
+            this.logger.error(`Error stopping service: ${err.message}`);
+            return reject(err);
+          }
+          this.logger.info(`${this.name} service stopped.`);
+          resolve();
+        });
+      } else {
+        resolve(); // No server to stop
+      }
     });
   }
 
