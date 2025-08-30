@@ -1,6 +1,6 @@
 {
   "name": "@6edesign/data-circuits",
-  "version": "0.0.4",
+  "version": "0.0.7",
   "type": "module",
   "types": "types/index.d.ts",
   "exports": {
@@ -20,7 +20,7 @@
     "lint": "echo 'Add lint script here'"
   },
   "devDependencies": {
-    "@6edesign/eslint-config": "workspace:^0.2.2",
+    "@6edesign/eslint-config": "workspace:^0.2.4",
     "ioredis-mock": "^8.9.0",
     "mocha": "^10.2.0",
     "sinon": "^18.0.0",

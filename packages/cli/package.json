@@ -1,6 +1,6 @@
 {
   "name": "@6edesign/cli",
-  "version": "0.1.8",
+  "version": "0.1.10",
   "description": "CLI for the Stacker framework",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -17,13 +17,13 @@
     "test": "vitest run --dir test"
   },
   "dependencies": {
-    "@6edesign/cicd": "^0.0.7",
     "@dagrejs/graphlib": "^2.2.4",
     "@dagrejs/graphlib-dot": "^1.0.2",
     "@octokit/rest": "^18.0.0",
     "@pulumi/docker": "^4.8.0",
     "@pulumi/docker-build": "^0.0.12",
     "@pulumi/pulumi": "^3.187.0",
+    "@6edesign/cicd": "^0.0.9",
     "chalk": "^5.3.0",
     "commander": "^12.1.0",
     "execa": "^9.6.0",
@@ -35,12 +35,11 @@
     "zod": "^3.25.76"
   },
   "devDependencies": {
-    "@6edesign/tsconfig": "workspace:^0.0.3",
+    "@6edesign/tsconfig": "workspace:^0.0.5",
     "@types/inquirer": "^9.0.7",
     "@types/js-yaml": "^4.0.9",
     "@types/node": "^20.12.12",
     "tsdown": "^0.13.0",
-    "typescript": "^5.4.5",
     "vitest": "^1.6.0"
   }
 }

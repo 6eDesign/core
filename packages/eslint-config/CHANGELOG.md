@@ -1,5 +1,11 @@
 # @6edesign/eslint-config
 
+## 0.2.4
+
+### Patch Changes
+
+- 833887e: fix: jsdoc
+
 ## 0.2.3
 
 ### Patch Changes

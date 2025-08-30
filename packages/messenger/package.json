@@ -1,6 +1,6 @@
 {
   "name": "@6edesign/messenger",
-  "version": "0.2.4",
+  "version": "0.2.5",
   "type": "module",
   "types": "types/index.d.ts",
   "exports": {
@@ -20,7 +20,7 @@
     "lint": "echo 'Add lint script here'"
   },
   "devDependencies": {
-    "@6edesign/eslint-config": "workspace:^0.2.2",
+    "@6edesign/eslint-config": "workspace:^0.2.4",
     "mocha": "^10.2.0",
     "supertest": "^6.3.4"
   },

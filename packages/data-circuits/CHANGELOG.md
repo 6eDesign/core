@@ -1,5 +1,23 @@
 # @6edesign/data-circuits
 
+## 0.0.7
+
+### Patch Changes
+
+- 833887e: fix: jsdoc
+
+## 0.0.6
+
+### Patch Changes
+
+- 12d02e8: fix: jsdoc annotation syntax updates
+
+## 0.0.5
+
+### Patch Changes
+
+- ae5b9c3: fix: tsc generation
+
 ## 0.0.4
 
 ### Patch Changes

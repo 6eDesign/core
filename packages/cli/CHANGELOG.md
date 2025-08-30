@@ -1,5 +1,21 @@
 # @6edesign/cli
 
+## 0.1.10
+
+### Patch Changes
+
+- 833887e: fix: jsdoc
+- Updated dependencies [833887e]
+  - @6edesign/cicd@0.0.9
+
+## 0.1.9
+
+### Patch Changes
+
+- ae5b9c3: fix: tsc generation
+- Updated dependencies [ae5b9c3]
+  - @6edesign/cicd@0.0.8
+
 ## 0.1.8
 
 ### Patch Changes
