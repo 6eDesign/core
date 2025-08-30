@@ -9,7 +9,7 @@ const program = new Command();
 
 program.version('0.1.0').description('A CLI for the Stacker framework (test change)');
 
-const commandBuilder = new NewCommandBuilder();
+const commandBuilder = new CommandBuilder();
 commandBuilder.build(program, commands);
 
 // If no command is provided, prompt the user to select one

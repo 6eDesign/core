@@ -6,6 +6,7 @@ import { DeploymentService } from '../services/deployment.service';
 import { graphCommand } from './graph';
 import { generateWorkflowMatrixCommand } from './generate-workflow-matrix';
 import { workflowWaitOnJobsCommand } from './workflow-wait-on-jobs';
+import { newPackageCommand } from './new-package';
 
 export const deployCommand = defineCommand({
 	name: 'deploy',
@@ -135,5 +136,6 @@ export const commands = [
 	deployCommand,
 	graphCommand,
 	generateWorkflowMatrixCommand,
-	workflowWaitOnJobsCommand
+	workflowWaitOnJobsCommand,
+	newPackageCommand
 ];

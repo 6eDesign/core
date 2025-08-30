@@ -1,11 +1,11 @@
 {
   "name": "@6edesign/cli",
   "version": "0.1.10",
-  "description": "CLI for the Stacker framework",
+  "description": "CLI for the 6edesign/zrpc framework",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "bin": {
-    "stacker": "dist/index.mjs"
+    "6e": "dist/index.mjs"
   },
   "publishConfig": {
     "access": "public"

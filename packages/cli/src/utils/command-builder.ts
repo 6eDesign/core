@@ -3,7 +3,7 @@ import { z } from 'zod';
 import { UiService } from '../services/ui.service';
 import { createSchema } from './defineCommand';
 
-export class NewCommandBuilder {
+export class CommandBuilder {
   private uiService: UiService;
 
   constructor() {
