@@ -1,0 +1,12 @@
+import cicd from '@6edesign/cicd';
+
+export default cicd.defineProjectConfig({
+	environments: [{{#each environments}}{{this}}{{#unless @last}},{{/unless}}{{/each}}],
+	pulumi: {
+		organization: "{{pulumiOrganization}}",
+		project: "{{pulumiProject}}",
+		environments: {
+			{{#each environments}}{{this}}: "{{this}}"{{#unless @last}},{{/unless}}{{/each}},
+		},
+	},
+});

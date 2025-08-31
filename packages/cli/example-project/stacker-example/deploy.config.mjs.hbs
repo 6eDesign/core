@@ -1,0 +1,12 @@
+import cicd from '@6edesign/cicd';
+
+export default cicd.defineProjectConfig({
+	environments: ["stg"],
+	pulumi: {
+		organization: "stacker-org",
+		project: "stacker-monorepo",
+		environments: {
+			stg: "stg",
+		},
+	},
+});
