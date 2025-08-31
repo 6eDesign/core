@@ -22,3 +22,4 @@ jobs:
       DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
       DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
       PULUMI_CONFIG_PASSPHRASE: '${{ secrets.PULUMI_CONFIG_PASSPHRASE }}'
+# Added a comment to trigger a new workflow run
