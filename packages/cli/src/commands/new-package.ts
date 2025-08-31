@@ -1,10 +1,9 @@
 import { z } from 'zod';
 import { defineCommand } from '../utils/defineCommand';
-import { promises as fs } from 'fs';
 import path from 'path';
 import { execa } from 'execa';
-import Handlebars from 'handlebars';
 import { fileURLToPath } from 'url';
+import { Generator } from '../utils/generator';
 
 const templateFilePaths = {
   'package.json': 'package.json.hbs',
@@ -62,36 +61,12 @@ export const newPackageCommand = defineCommand({
     console.log(`Creating new package '${fullPackageName}' at ${packageDir}...`);
 
     try {
-      // Check if directory exists and is not empty
-      try {
-        const stats = await fs.stat(packageDir);
-        if (stats.isDirectory()) {
-          const files = await fs.readdir(packageDir);
-          if (files.length > 0) {
-            throw new Error(`Target directory '${packageDir}' is not empty. Aborting to prevent accidental overwrite.`);
-          }
-        }
-      } catch (error: any) {
-        if (error.code !== 'ENOENT') { // Ignore if directory simply doesn't exist
-          throw error;
-        }
-      }
-
-      // Create directories
-      await fs.mkdir(packageDir, { recursive: true });
-      await fs.mkdir(path.join(packageDir, 'src'), { recursive: true });
-      await fs.mkdir(path.join(packageDir, 'test'), { recursive: true });
-
-      // Compile and write files from templates
-      for (const [outputFileName, templateFileName] of Object.entries(templateFilePaths)) {
-        const templatePath = path.join(templatesDir, templateFileName);
-        const templateContent = await fs.readFile(templatePath, 'utf8');
-        const template = Handlebars.compile(templateContent);
-        const compiledContent = template({ fullPackageName, packageName, scope, description });
-        
-        const outputFilePath = path.join(packageDir, outputFileName);
-        await fs.writeFile(outputFilePath, compiledContent);
-      }
+      const generator = new Generator(templatesDir, packageDir);
+      await generator.run(
+        templateFilePaths,
+        { fullPackageName, packageName, scope, description },
+        ['src', 'test']
+      );
 
       console.log(`Successfully created package '${fullPackageName}'!`);
 
