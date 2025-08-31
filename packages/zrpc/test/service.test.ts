@@ -62,4 +62,9 @@ describe('ZRPCService', () => {
       ],
     });
   });
+
+  it('should expose the OpenAPI spec at /openapi.json', async () => {
+    const resp = await request(service.app).get('/openapi.json').expect(200);
+    expect(resp.body).toMatchSnapshot();
+  });
 });
