@@ -1,11 +1,11 @@
 {
   "name": "@6edesign/cli",
   "version": "0.1.10",
-  "description": "CLI for the Stacker framework",
+  "description": "CLI for the 6edesign/zrpc framework",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "bin": {
-    "stacker": "dist/index.mjs"
+    "6e": "dist/index.mjs"
   },
   "publishConfig": {
     "access": "public"
@@ -32,6 +32,7 @@
     "inquirer-autocomplete-prompt": "^3.0.0",
     "js-yaml": "^4.1.0",
     "ora": "^8.0.1",
+    "handlebars": "^4.7.8",
     "zod": "^3.25.76"
   },
   "devDependencies": {
@@ -39,6 +40,7 @@
     "@types/inquirer": "^9.0.7",
     "@types/js-yaml": "^4.0.9",
     "@types/node": "^20.12.12",
+    "@types/handlebars": "^4.1.0",
     "tsdown": "^0.13.0",
     "vitest": "^1.6.0"
   }

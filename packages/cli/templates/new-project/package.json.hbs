@@ -1,0 +1,40 @@
+{
+  "name": "{{projectScope}}{{#if projectScope}}/{{/if}}{{projectName}}",
+  "version": "1.0.0",
+  "main": "index.js",
+  "private": true,
+  "scripts": {
+    "pretest": "docker compose up -d --wait",
+    "test": "turbo test",
+    "predev": "docker compose up -d --wait",
+    "dev": "turbo dev",
+    "build": "turbo build",
+    "check-types": "turbo run check-types",
+    "graph:order": "pnpm turbo run build --graph | pnpm --filter {{projectScope}}/graph-util exec node ./dist/index.js",
+    "release": "turbo run build && changeset publish",
+    "version": "changeset version",
+    "postversion": "CI=false pnpm install"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "{{projectDescription}}",
+  "workspaces": [
+    "packages/**",
+    "apps/**"
+  ],
+  "devDependencies": {
+    "prettier": "^3.6.2",
+    "turbo": "^2.4.2",
+    "typescript": "^5.9.2"
+  },
+  "packageManager": "pnpm@{{pnpmVersion}}",
+  "pnpm": {
+    "neverBuiltDependencies": [],
+    "overrides": {
+      "uri-js": "npm:uri-js-replace"
+    }
+  },
+  "dependencies": {
+    "zod": "^4.0.5"
+  }
+}

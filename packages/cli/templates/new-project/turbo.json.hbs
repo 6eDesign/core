@@ -1,0 +1,40 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "ui": "tui",
+  "tasks": {
+    "build": {
+      "dependsOn": [
+        "^build"
+      ],
+      "outputs": [
+        "dist/",
+        "build/",
+        "types/"
+      ]
+    },
+    "test": {
+      "dependsOn": [
+        "^build"
+      ]
+    },
+    "check-types": {
+      "outputs": [],
+      "inputs": [
+        "src/**/*.js",
+        "lib/**/*.js",
+        "jsconfig.json",
+        "package.json"
+      ],
+      "dependsOn": [
+        "^build"
+      ]
+    },
+    "dev": {
+      "persistent": true,
+      "dependsOn": [
+        "^build"
+      ],
+      "cache": false
+    }
+  }
+}

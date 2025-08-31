@@ -1,0 +1,36 @@
+## Project Overview
+
+This is a JavaScript/TypeScript monorepo managed with `pnpm` workspaces and `turbo` for task orchestration. It contains multiple applications in the `apps/` directory and shared packages in the `packages/` directory.
+
+## Building and Running
+
+To build, test, or run the project, you will typically use `pnpm turbo` commands. Here are some common commands:
+
+*   **Install dependencies:** `pnpm install`
+*   **Build all projects:** `pnpm turbo build`
+*   **Run tests for all projects:** `pnpm turbo test`
+*   **Run type checking for all projects:** `pnpm turbo check-types`
+*   **Start development servers (if applicable):** `pnpm turbo dev`
+
+To run a specific task for a specific app or package, you can use the `--filter` flag with the package name (including scope). For example:
+
+*   **Build a specific app:** `pnpm turbo build --filter={{projectScope}}/your-app-name`
+*   **Run tests for a specific package:** `pnpm turbo test --filter={{projectScope}}/your-package-name`
+
+**Important Note on Turbo Filters:** When using `--filter`, Turbo will automatically build the dependencies of the targeted packages if necessary. This means you often don't need to explicitly build dependent packages beforehand.
+
+## Project Structure and Key Files
+
+*   **`/` (Project Root):** Contains global configuration files such as `package.json`, `pnpm-workspace.yaml`, `turbo.json`, `deploy.config.mjs`, and various dotfiles (`.gitignore`, `.nvmrc`, `.prettierrc`).
+*   **`apps/`:** Houses independent applications. Each subdirectory within `apps/` is a distinct application.
+    *   **Key files within an app:** `package.json`, `jsconfig.json` or `tsconfig.json`, `deploy.config.mjs` (for deployable applications).
+*   **`packages/`:** Contains shared libraries, utilities, and internal tools used across the monorepo. Each subdirectory within `packages/` is is a distinct package.
+    *   **Key files within a package:** `package.json`, `tsconfig.json`.
+
+## Development Conventions
+
+*   **Monorepo Structure:** Applications reside in `apps/` and shared packages in `packages/`.
+*   **Task Runner:** `turbo` is used for consistent build, test, and other development tasks across the monorepo.
+*   **Package Manager:** `pnpm` is the package manager of choice, leveraging workspaces for dependency management.
+*   **Configuration:** Project-wide configurations are typically found in the root directory. Individual applications and packages have their own `package.json` and specific configurations.
+*   **Code Style:** Adhere to the existing code style and formatting as defined by `.prettierrc` and ESLint configurations.
