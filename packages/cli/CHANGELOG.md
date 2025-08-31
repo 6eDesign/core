@@ -1,5 +1,17 @@
 # @6edesign/cli
 
+## 0.1.11
+
+### Patch Changes
+
+- 66aa1cb: feat: zrpc & generator updates
+- 94fd007: fix: zrpc + cli updates
+- b723b37: fix: CLI refactor
+- 66aa1cb: feat: zrpc & CLI generator updates
+- Updated dependencies [94fd007]
+- Updated dependencies [b723b37]
+  - @6edesign/cicd@0.0.10
+
 ## 0.1.10
 
 ### Patch Changes

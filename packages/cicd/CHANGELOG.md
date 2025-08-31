@@ -1,5 +1,12 @@
 # @6edesign/cicd
 
+## 0.0.10
+
+### Patch Changes
+
+- 94fd007: fix: zrpc + cli updates
+- b723b37: fix: CLI refactor
+
 ## 0.0.9
 
 ### Patch Changes

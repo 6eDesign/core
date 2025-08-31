@@ -1,5 +1,12 @@
 # @6edesign/data-circuits
 
+## 0.0.8
+
+### Patch Changes
+
+- 94fd007: fix: zrpc + cli updates
+- b723b37: fix: CLI refactor
+
 ## 0.0.7
 
 ### Patch Changes
