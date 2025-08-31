@@ -138,6 +138,7 @@ export class ZRPCService {
       registry.registerPath({
         method: route.method ?? 'get',
         path: route.path,
+        ...route.openapi, // Spread the openapi property here
         request: {
           ...(route.method === 'get' && { query: route.input as any }),
           ...(route.method !== 'get' && {

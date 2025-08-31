@@ -147,6 +147,113 @@ userServiceClient.createUser({ name: 'Jane Doe', email: 'jane.doe@example.com' }
   .catch(error => console.error('Error creating user:', error.message));
 ```
 
+## OpenAPI Generation
+
+One of the core features of `@6edesign/zrpc` is its ability to automatically generate OpenAPI (Swagger) documentation directly from your Zod schemas and route definitions. This ensures your API documentation is always in sync with your code.
+
+### Basic Generation
+
+By default, `ZRPCService` will generate a basic OpenAPI specification for all registered routes. You don't need any extra configuration to get started.
+
+```typescript
+// Example: Basic OpenAPI generation
+import { z } from './src/zod';
+import { createRoute } from './src/router';
+import { ZRPCService } from './src/service';
+
+const SimpleUserSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+});
+
+const getSimpleUserRoute = createRoute({
+  path: '/simple-users/{id}',
+  method: 'get',
+  input: z.object({ id: z.string() }),
+  output: SimpleUserSchema,
+});
+
+const service = new ZRPCService({ name: 'SimpleService', port: 0 });
+service.addRoute(getSimpleUserRoute, async (input) => ({ id: input.id, name: 'Test User' }));
+
+const openApiSpec = service.generateOpenAPI();
+// This `openApiSpec` will contain a basic definition for /simple-users/{id}
+```
+This will generate a basic OpenAPI definition for your `/simple-users/{id}` endpoint, inferring parameters and responses from your `input` and `output` schemas.
+
+### Customizing Schemas with `.openapi()`
+
+You can enrich the documentation for your Zod schemas by using the `.openapi()` method. This allows you to add `description`, `example` values, and register schemas as reusable components in the OpenAPI document's `components/schemas` section.
+
+```typescript
+import { z } from './src/zod';
+
+const ProductSchema = z.object({
+  productId: z.string().uuid().openapi({
+    description: 'Unique identifier for the product',
+    example: 'a1b2c3d4-e5f6-7890-1234-567890abcdef',
+  }),
+  name: z.string().min(3).openapi({
+    description: 'Name of the product',
+    example: 'Super Widget',
+  }),
+  price: z.number().positive().openapi({
+    description: 'Price of the product in USD',
+    example: 99.99,
+  }),
+}).openapi('Product', { // Register as a component named 'Product'
+  description: 'Detailed information about a product',
+});
+
+// This schema will appear in #/components/schemas/Product
+// with the provided descriptions and examples.
+```
+
+### Customizing Routes with `openapi` Property (Escape Hatch)
+
+For more granular control over the generated OpenAPI operation (e.g., `summary`, `tags`, `operationId`), you can provide an `openapi` property directly within your `createRoute` options. This acts as an escape hatch to directly influence the OpenAPI [Operation Object](https://swagger.io/docs/specification/describing-operations/).
+
+**Important:** `@6edesign/zrpc` automatically infers parameters and request bodies from your `input` schemas. You should generally *not* need to manually define `parameters` or `requestBody` within this `openapi` property unless you have very specific, non-standard requirements.
+
+```typescript
+import { createRoute } from './src/router';
+import { z } from './src/zod';
+import { ProductSchema } from './path/to/your/schemas'; // Assuming ProductSchema is defined elsewhere
+
+const getProductDetailsRoute = createRoute({
+  path: '/products/{productId}',
+  method: 'get',
+  input: z.object({ productId: z.string().uuid() }),
+  output: ProductSchema,
+  openapi: {
+    summary: 'Retrieve product details',
+    description: 'Fetches comprehensive details for a specific product by its ID.',
+    tags: ['Products', 'Public API'],
+    operationId: 'getProductDetailsById',
+    parameters: [
+      {
+        name: 'productId',
+        in: 'path',
+        required: true,
+        description: 'The unique identifier of the product',
+        schema: { type: 'string', format: 'uuid' },
+      },
+      {
+        name: 'includeReviews',
+        in: 'query',
+        required: false,
+        description: 'Include customer reviews in the response',
+        schema: { type: 'boolean' },
+      },
+    ],
+    responses: {
+      200: { description: 'Product details retrieved successfully' },
+      404: { description: 'Product not found' },
+    },
+  },
+});
+```
+
 ## API Reference
 
 TODO: Link to comprehensive API documentation (e.g., TypeDoc generated).
@@ -161,9 +268,6 @@ TODO: Link to comprehensive API documentation (e.g., TypeDoc generated).
 
 *   **Configuring CORS and Compression:**
     Control CORS (Cross-Origin Resource Sharing) and response compression by setting `useCors` and `useCompression` boolean options in the `ZRPCService` constructor. Both are `true` by default.
-
-*   **Customizing OpenAPI Document Generation:**
-    The `generateOpenAPI()` method returns a standard OpenAPI 3.0 `OpenAPIObject`. You can call this method to retrieve the generated specification and further customize it or serve it via a different endpoint.
 
 ## Development
 

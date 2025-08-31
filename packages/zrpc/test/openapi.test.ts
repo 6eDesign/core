@@ -30,7 +30,7 @@ describe('OpenAPI Generation', () => {
       output: BasicSchema,
     });
 
-    service.addRoute(getBasicRoute, async (input) => ({ id: input.id, name: 'Test', age: 30, isActive: true, email: 'test@example.com', createdAt: new Date().toISOString() }));
+    service.addRoute(getBasicRoute, async (input) => ({ ...input, name: 'Test', age: 30, isActive: true, email: 'test@example.com', createdAt: new Date().toISOString() }));
     service.addRoute(createBasicRoute, async (input) => ({ ...input, id: 'new-id', createdAt: new Date().toISOString() }));
 
     const openApiDoc = service.generateOpenAPI();
@@ -100,6 +100,123 @@ describe('OpenAPI Generation', () => {
       count: 5,
       notes: null,
     }));
+
+    const openApiDoc = service.generateOpenAPI();
+    expect(openApiDoc).toMatchSnapshot();
+  });
+
+  it('should correctly apply schema metadata (description, example, component registration)', () => {
+    const service = new ZRPCService({ name: 'SchemaMetadataService', port: 0 });
+
+    const UserProfileSchema = z.object({
+      userId: z.string().uuid().openapi({ description: 'Unique identifier for the product', example: 'a1b2c3d4-e5f6-7890-1234-567890abcdef' }),
+      username: z.string().min(3).openapi({ description: "User's chosen username", example: 'johndoe' }),
+      age: z.number().int().positive().openapi({ description: "User's age", example: 30 }),
+      email: z.string().email().openapi({ description: "User's email address", example: 'john.doe@example.com' }),
+    }).openapi('UserProfile', { description: 'Detailed user profile information' });
+
+    const ProductItemSchema = z.object({
+      productId: z.string().openapi({ description: 'ID of the product', example: 'prod-abc' }),
+      quantity: z.number().int().positive().openapi({ description: 'Quantity of the product', example: 2 }),
+    }).openapi('ProductItem'); // Register as component without extra metadata
+
+    const OrderSchema = z.object({
+      orderId: z.string().openapi({ description: 'Unique order ID', example: 'ord-xyz' }),
+      items: z.array(ProductItemSchema).openapi({ description: 'List of products in the order' }),
+      totalAmount: z.number().openapi({ description: 'Total amount of the order', example: 123.45 }),
+    }).openapi('Order', { description: 'An order placed by a user' });
+
+    const getUserProfileRoute = createRoute({
+      path: '/profiles/{userId}',
+      method: 'get',
+      input: z.object({ userId: z.string() }),
+      output: UserProfileSchema,
+    });
+
+    const createOrderRoute = createRoute({
+      path: '/orders',
+      method: 'post',
+      input: OrderSchema.omit({ orderId: true }),
+      output: OrderSchema,
+    });
+
+    service.addRoute(getUserProfileRoute, async (input) => ({
+      userId: input.userId,
+      username: 'testuser',
+      age: 25,
+      email: 'test@example.com',
+    }));
+
+    service.addRoute(createOrderRoute, async (input) => ({
+      orderId: 'new-order-id',
+      items: input.items,
+      totalAmount: input.items.reduce((sum, item) => sum + item.quantity * 10, 0),
+    }));
+
+    const openApiDoc = service.generateOpenAPI();
+    expect(openApiDoc).toMatchSnapshot();
+  });
+
+  it('should correctly apply route-level metadata', () => {
+    const service = new ZRPCService({ name: 'RouteMetadataService', port: 0 });
+
+    const SimpleInput = z.object({ query: z.string() });
+    const SimpleOutput = z.object({ result: z.string() });
+
+    const getWithMetadataRoute = createRoute({
+      path: '/metadata-get',
+      method: 'get',
+      input: SimpleInput,
+      output: SimpleOutput,
+      openapi: {
+        summary: 'Get data with metadata',
+        description: 'This endpoint demonstrates route-level metadata for a GET request.',
+        tags: ['Metadata', 'Examples'],
+        operationId: 'getMetadataExample',
+        parameters: [
+          {
+            name: 'customParam',
+            in: 'header',
+            required: true,
+            description: 'A custom header parameter',
+            schema: { type: 'string' },
+          },
+        ],
+        responses: {
+          200: { description: 'Successful response with metadata' },
+          400: { description: 'Bad request due to invalid input' },
+        },
+      },
+    });
+
+    const postWithMetadataRoute = createRoute({
+      path: '/metadata-post',
+      method: 'post',
+      input: SimpleInput,
+      output: SimpleOutput,
+      openapi: {
+        summary: 'Post data with metadata',
+        description: 'This endpoint demonstrates route-level metadata for a POST request.',
+        tags: ['Metadata'],
+        operationId: 'postMetadataExample',
+        requestBody: {
+          description: 'Request body description',
+          content: {
+            'application/json': {
+              schema: SimpleInput,
+            },
+          },
+        },
+        responses: {
+          200: { description: 'Successful POST response' },
+        },
+      },
+    });
+
+    service.addRoute(getWithMetadataRoute, async (input) => ({
+      result: `Processed ${input.query}` }));
+    service.addRoute(postWithMetadataRoute, async (input) => ({
+      result: `Posted ${input.query}` }));
 
     const openApiDoc = service.generateOpenAPI();
     expect(openApiDoc).toMatchSnapshot();
