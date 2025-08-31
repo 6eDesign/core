@@ -4,7 +4,10 @@
   "private": true,
   "packageManager": "pnpm@10.15.0",
   "pnpm": {
-    "neverBuiltDependencies": []
+    "neverBuiltDependencies": [],
+    "overrides": {
+      "uri-js": "npm:uri-js-replace"
+    }
   },
   "description": "Shared packages and reusable workflows for 6edesign projects.",
   "scripts": {
