@@ -58,8 +58,8 @@ importers:
   packages/cli:
     dependencies:
       '@6edesign/cicd':
-        specifier: ^0.0.9
-        version: 0.0.9(@pulumi/docker-build@0.0.12(typescript@5.9.2))(@pulumi/docker@4.8.2(typescript@5.9.2))(@pulumi/pulumi@3.192.0(typescript@5.9.2))
+        specifier: workspace:^0.0.9
+        version: link:../cicd
       '@dagrejs/graphlib':
         specifier: ^2.2.4
         version: 2.2.4
@@ -241,11 +241,11 @@ importers:
   packages/microservice:
     dependencies:
       '@6edesign/messenger':
-        specifier: ^0.2.5
-        version: 0.2.5
+        specifier: workspace:^0.2.5
+        version: link:../messenger
       '@6edesign/tracing':
-        specifier: ^0.2.5
-        version: 0.2.5(encoding@0.1.13)
+        specifier: workspace:^0.2.5
+        version: link:../tracing
       '@asteasolutions/zod-to-openapi':
         specifier: ^6.3.1
         version: 6.4.0(zod@3.25.76)
@@ -363,11 +363,11 @@ importers:
   packages/zrpc:
     dependencies:
       '@6edesign/messenger':
-        specifier: ^0.2.5
-        version: 0.2.5
+        specifier: workspace:^0.2.5
+        version: link:../messenger
       '@6edesign/tracing':
-        specifier: ^0.2.5
-        version: 0.2.5(encoding@0.1.13)
+        specifier: workspace:^0.2.5
+        version: link:../tracing
       '@asteasolutions/zod-to-openapi':
         specifier: ^6.3.1
         version: 6.4.0(zod@3.25.76)
@@ -461,19 +461,6 @@ importers:
         version: 1.6.1(@types/node@20.19.11)
 
 packages:
-
-  '@6edesign/cicd@0.0.9':
-    resolution: {integrity: sha512-DJip4CvBlboVQm0FsGSuUa0w0pxMjJ9S1N2an7knl6rLpG3BkmbSA1dFoUlciRxlYC0/8ZekGG4CWnxMrUey9A==}
-    peerDependencies:
-      '@pulumi/docker': ^4.8.0
-      '@pulumi/docker-build': ^0.0.12
-      '@pulumi/pulumi': ^3.187.0
-
-  '@6edesign/messenger@0.2.5':
-    resolution: {integrity: sha512-+SbVReL2OoF/aRwxOs4CK439iGOGFAaLyuHrTtPoayg2TbZCnAdnJZQbVwjROv5or1gLlj9ByimITrl/4rT7gA==}
-
-  '@6edesign/tracing@0.2.5':
-    resolution: {integrity: sha512-M1WJXz/Hx8fTUNyWm3wjfqeT9DmMRjspCVsCKsb9YDJwutUrWikUhyfog7JQAy8yy7X2nARYAIDQOAnvM21lRQ==}
 
   '@ampproject/remapping@2.3.0':
     resolution: {integrity: sha512-30iZtAPgz+LTIYoeivqYo853f02jBYSd5uGnGpkFV0M3xOt9aN73erkgYAmZU43x4VfqcnLxW9Kpg3R5LC4YYw==}
@@ -5526,44 +5513,6 @@ packages:
     resolution: {integrity: sha512-rcUUZqlLJgBC33IT3PNMgsCq6TzLQEG/Ei/KTCU0PedSWRMAXoOUN+4t/0H+Q8bdnLPdqUYnvboJT0bn/229qg==}
 
 snapshots:
-
-  '@6edesign/cicd@0.0.9(@pulumi/docker-build@0.0.12(typescript@5.9.2))(@pulumi/docker@4.8.2(typescript@5.9.2))(@pulumi/pulumi@3.192.0(typescript@5.9.2))':
-    dependencies:
-      '@pulumi/docker': 4.8.2(typescript@5.9.2)
-      '@pulumi/docker-build': 0.0.12(typescript@5.9.2)
-      '@pulumi/pulumi': 3.192.0(typescript@5.9.2)
-      zod: 4.1.5
-
-  '@6edesign/messenger@0.2.5':
-    dependencies:
-      axios: 1.11.0
-      bull: 4.16.5
-      events: 3.3.0
-      express: 4.21.2
-      mqtt: 5.14.0
-      zod: 3.25.76
-    transitivePeerDependencies:
-      - bufferutil
-      - debug
-      - supports-color
-      - utf-8-validate
-
-  '@6edesign/tracing@0.2.5(encoding@0.1.13)':
-    dependencies:
-      '@opentelemetry/api': 1.9.0
-      '@opentelemetry/auto-instrumentations-node': 0.41.1(@opentelemetry/api@1.9.0)(encoding@0.1.13)
-      '@opentelemetry/exporter-prometheus': 0.48.0(@opentelemetry/api@1.9.0)
-      '@opentelemetry/exporter-trace-otlp-http': 0.48.0(@opentelemetry/api@1.9.0)
-      '@opentelemetry/sdk-metrics': 1.30.1(@opentelemetry/api@1.9.0)
-      '@opentelemetry/sdk-node': 0.48.0(@opentelemetry/api@1.9.0)
-      '@opentelemetry/sdk-trace-node': 1.30.1(@opentelemetry/api@1.9.0)
-      axios: 1.11.0
-      express: 4.21.2
-      zod: 3.25.76
-    transitivePeerDependencies:
-      - debug
-      - encoding
-      - supports-color
 
   '@ampproject/remapping@2.3.0':
     dependencies:
