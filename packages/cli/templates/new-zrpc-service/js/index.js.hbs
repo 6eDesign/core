@@ -1,0 +1,14 @@
+import { ZRPCService } from '@6edesign/zrpc';
+import * as routes from './routes.js';
+
+const server = new ZRPCService({
+    name: '{{serviceName}}',
+    port: process.env.PORT ? +process.env.PORT : {{port}}
+});
+
+server.addRoute(routes.exampleRoute, async (input) => {
+    console.log('Received input:', input);
+    return { message: 'Hello from {{serviceName}}!', input };
+});
+
+server.start();

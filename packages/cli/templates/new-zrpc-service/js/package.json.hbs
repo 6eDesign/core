@@ -1,0 +1,19 @@
+{
+  "name": "{{fullServiceName}}",
+  "version": "1.0.0",
+  "main": "sdk.js",
+  "types": "types/sdk.d.ts",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "build": "tsc sdk.js --declaration --allowJs --emitDeclarationOnly --outDir types",
+    "dev": "nodemon index.js",
+    "start": "node index.js"
+  },
+  "dependencies": {
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.9",
+    "typescript": "^5.0.0"
+  }
+}

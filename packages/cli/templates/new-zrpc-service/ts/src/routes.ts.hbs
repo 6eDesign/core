@@ -1,0 +1,14 @@
+import { createRoute } from "@6edesign/zrpc/router";
+import { z } from "@6edesign/zrpc/zod";
+
+export const exampleRoute = createRoute({
+  method: "get",
+  path: "/example",
+  input: z.object({
+    message: z.string().optional(),
+  }),
+  output: z.object({
+    message: z.string(),
+    input: z.any(),
+  }),
+});
