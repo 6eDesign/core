@@ -1,5 +1,14 @@
 # @6edesign/eslint-config
 
+## 0.2.5
+
+### Patch Changes
+
+- 66aa1cb: feat: zrpc & generator updates
+- 94fd007: fix: zrpc + cli updates
+- b723b37: fix: CLI refactor
+- 66aa1cb: feat: zrpc & CLI generator updates
+
 ## 0.2.4
 
 ### Patch Changes

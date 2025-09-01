@@ -1,5 +1,11 @@
 # @6edesign/tsconfig
 
+## 0.0.6
+
+### Patch Changes
+
+- 94fd007: fix: zrpc + cli updates
+
 ## 0.0.5
 
 ### Patch Changes

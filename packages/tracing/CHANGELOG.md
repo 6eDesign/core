@@ -1,5 +1,12 @@
 # @6edesign/tracing
 
+## 0.2.6
+
+### Patch Changes
+
+- 94fd007: fix: zrpc + cli updates
+- b723b37: fix: CLI refactor
+
 ## 0.2.5
 
 ### Patch Changes

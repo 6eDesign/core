@@ -1,5 +1,16 @@
 # @6edesign/microservice
 
+## 0.2.13
+
+### Patch Changes
+
+- 94fd007: fix: zrpc + cli updates
+- b723b37: fix: CLI refactor
+- Updated dependencies [94fd007]
+- Updated dependencies [b723b37]
+  - @6edesign/messenger@0.2.6
+  - @6edesign/tracing@0.2.6
+
 ## 0.2.12
 
 ### Patch Changes
