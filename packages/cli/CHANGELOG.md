@@ -1,5 +1,11 @@
 # @6edesign/cli
 
+## 0.1.12
+
+### Patch Changes
+
+- 9bce132: feat: Implement new-zrpc-service command, templates, and documentation
+
 ## 0.1.11
 
 ### Patch Changes
