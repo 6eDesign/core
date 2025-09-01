@@ -1,0 +1,21 @@
+{
+  "name": "{{fullServiceName}}",
+  "version": "1.0.0",
+  "main": "dist/sdk.js",
+  "types": "dist/sdk.d.ts",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "build": "tsdown",
+    "dev": "tsdown --watch & tsx watch src/index.ts",
+    "start": "node dist/index.js"
+  },
+  "dependencies": {
+  },
+  "devDependencies": {
+    "@6edesign/tsconfig": "workspace:^0.0.6",
+    "@types/node": "^20.12.12",
+    "tsdown": "^0.13.0",
+    "tsx": "^4.0.0"
+  }
+}

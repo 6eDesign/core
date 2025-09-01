@@ -23,7 +23,18 @@ This monorepo houses shared packages and reusable CI/CD workflows used across va
     ```bash
     pnpm turbo build
     ```
-4.  **Run tests for all packages:**
+4.  **Generate new projects, packages, or services:**
+    The `@6edesign/cli` package provides powerful code generation capabilities to quickly scaffold new projects, packages, and zRPC services, adhering to the monorepo's conventions. This simplifies the setup of new components and ensures consistency across the codebase.
+
+    You can generate:
+
+    *   **New Monorepo Projects:** Use `pnpm exec stacker new-project` to bootstrap a complete monorepo structure.
+    *   **New Packages:** Use `pnpm exec stacker new-package` to create new shared libraries or utilities within the `packages/` directory.
+    *   **New zRPC Services:** Use `pnpm exec stacker new-zrpc-service` to scaffold new microservices within the `apps/` directory, with options for JavaScript or TypeScript.
+
+    For detailed usage and examples of these code generation commands, please refer to the [CLI's README.md](packages/cli/README.md).
+
+5.  **Run tests for all packages:**
     ```bash
     pnpm turbo test
     ```

@@ -1,0 +1,6 @@
+import { clientFactory } from '@6edesign/zrpc/client';
+import * as routes from './routes.js';
+
+export const createSDK = clientFactory({
+    exampleRoute: routes.exampleRoute,
+});

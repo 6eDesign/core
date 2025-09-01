@@ -60,6 +60,40 @@ Follow the prompts to select the workspace, deployable, and environment.
 pnpm exec stacker deploy --workspace=my-app --deployable=dockerImage --environment=prod --version=1.0.0
 ```
 
+### Code Generation Commands
+
+The CLI provides commands to quickly scaffold new projects, packages, and zRPC services, adhering to the monorepo's conventions.
+
+#### New Project
+
+To bootstrap a new monorepo project:
+
+```bash
+pnpm exec stacker new-project
+```
+
+Follow the prompts to configure your new project.
+
+#### New Package
+
+To create a new TypeScript package within the `packages/` directory:
+
+```bash
+pnpm exec stacker new-package
+```
+
+Follow the prompts to define your new package.
+
+#### New zRPC Service
+
+To scaffold a new zRPC microservice within the `apps/` directory:
+
+```bash
+pnpm exec stacker new-zrpc-service
+```
+
+Follow the prompts to configure your new service (JavaScript or TypeScript).
+
 ## Development
 
 To add new commands or extend existing ones:

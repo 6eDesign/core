@@ -8,6 +8,7 @@ import { generateWorkflowMatrixCommand } from './generate-workflow-matrix';
 import { workflowWaitOnJobsCommand } from './workflow-wait-on-jobs';
 import { newPackageCommand } from './new-package';
 import { newProjectCommand } from './new-project';
+import { newZRPCServiceCommand } from './new-zrpc-service';
 
 export const deployCommand = defineCommand({
 	name: 'deploy',
@@ -139,5 +140,6 @@ export const commands = [
 	generateWorkflowMatrixCommand,
 	workflowWaitOnJobsCommand,
 	newPackageCommand,
-	newProjectCommand
+	newProjectCommand,
+	newZRPCServiceCommand
 ];
