@@ -363,11 +363,11 @@ importers:
   packages/zrpc:
     dependencies:
       '@6edesign/messenger':
-        specifier: workspace:^0.2.6
-        version: link:../messenger
+        specifier: ^0.2.5
+        version: 0.2.6
       '@6edesign/tracing':
-        specifier: workspace:^0.2.6
-        version: link:../tracing
+        specifier: ^0.2.5
+        version: 0.2.6(encoding@0.1.13)
       '@asteasolutions/zod-to-openapi':
         specifier: ^6.3.1
         version: 6.4.0(zod@3.25.76)
@@ -461,6 +461,12 @@ importers:
         version: 1.6.1(@types/node@20.19.11)
 
 packages:
+
+  '@6edesign/messenger@0.2.6':
+    resolution: {integrity: sha512-wnyY7bICh9jNzAlGzzGn7gb1+Ehkuf/OYdU1qD3DqzeMyicgtQaRuqhXH15tHHvzbF7cg34CKx0vj9/M3NW3bQ==}
+
+  '@6edesign/tracing@0.2.6':
+    resolution: {integrity: sha512-iDD6GIiwv8cyu1j1RjH2aCpT3+Z5CJ8G9o9RnT7dVko/JFGGq8H4iOFyo3Y3SgK50r/Tf4De3lL/hl3BxHMk6A==}
 
   '@ampproject/remapping@2.3.0':
     resolution: {integrity: sha512-30iZtAPgz+LTIYoeivqYo853f02jBYSd5uGnGpkFV0M3xOt9aN73erkgYAmZU43x4VfqcnLxW9Kpg3R5LC4YYw==}
@@ -5513,6 +5519,37 @@ packages:
     resolution: {integrity: sha512-rcUUZqlLJgBC33IT3PNMgsCq6TzLQEG/Ei/KTCU0PedSWRMAXoOUN+4t/0H+Q8bdnLPdqUYnvboJT0bn/229qg==}
 
 snapshots:
+
+  '@6edesign/messenger@0.2.6':
+    dependencies:
+      axios: 1.11.0
+      bull: 4.16.5
+      events: 3.3.0
+      express: 4.21.2
+      mqtt: 5.14.0
+      zod: 3.25.76
+    transitivePeerDependencies:
+      - bufferutil
+      - debug
+      - supports-color
+      - utf-8-validate
+
+  '@6edesign/tracing@0.2.6(encoding@0.1.13)':
+    dependencies:
+      '@opentelemetry/api': 1.9.0
+      '@opentelemetry/auto-instrumentations-node': 0.41.1(@opentelemetry/api@1.9.0)(encoding@0.1.13)
+      '@opentelemetry/exporter-prometheus': 0.48.0(@opentelemetry/api@1.9.0)
+      '@opentelemetry/exporter-trace-otlp-http': 0.48.0(@opentelemetry/api@1.9.0)
+      '@opentelemetry/sdk-metrics': 1.30.1(@opentelemetry/api@1.9.0)
+      '@opentelemetry/sdk-node': 0.48.0(@opentelemetry/api@1.9.0)
+      '@opentelemetry/sdk-trace-node': 1.30.1(@opentelemetry/api@1.9.0)
+      axios: 1.11.0
+      express: 4.21.2
+      zod: 3.25.76
+    transitivePeerDependencies:
+      - debug
+      - encoding
+      - supports-color
 
   '@ampproject/remapping@2.3.0':
     dependencies:
