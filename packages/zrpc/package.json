@@ -1,6 +1,6 @@
 {
   "name": "@6edesign/zrpc",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "A schema-driven microservice library for building robust, type-safe APIs and clients in TypeScript or JavaScript.",
   "exports": {
     ".": {
