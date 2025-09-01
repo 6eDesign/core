@@ -1,5 +1,11 @@
 # @6edesign/zrpc
 
+## 0.0.3
+
+### Patch Changes
+
+- 53ce693: fix: zrpc package configuration
+
 ## 0.0.2
 
 ### Patch Changes
