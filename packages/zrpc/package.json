@@ -4,6 +4,7 @@
   "description": "A schema-driven microservice library for building robust, type-safe APIs and clients in TypeScript or JavaScript.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "type": "module",
   "publishConfig": {
     "access": "public"
   },
