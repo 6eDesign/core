@@ -1,5 +1,11 @@
 # @6edesign/zrpc
 
+## 0.0.2
+
+### Patch Changes
+
+- 539f368: fix: package configuration
+
 ## 0.0.1
 
 ### Patch Changes
