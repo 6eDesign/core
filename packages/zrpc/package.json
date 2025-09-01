@@ -2,15 +2,35 @@
   "name": "@6edesign/zrpc",
   "version": "0.0.2",
   "description": "A schema-driven microservice library for building robust, type-safe APIs and clients in TypeScript or JavaScript.",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
-  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    },
+    "./client": {
+      "import": "./dist/client.mjs",
+      "require": "./dist/client.js"
+    },
+    "./messenger-client": {
+      "import": "./dist/messenger-client.mjs",
+      "require": "./dist/messenger-client.js"
+    },
+    "./router": {
+      "import": "./dist/router.mjs",
+      "require": "./dist/router.js"
+    },
+    "./zod": {
+      "import": "./dist/zod.mjs",
+      "require": "./dist/zod.js"
+    },
+    "./package.json": "./package.json"
+  },
   "publishConfig": {
     "access": "public"
   },
   "scripts": {
-    "dev": "tsdown --watch src/index.ts",
-    "build": "tsdown src/index.ts",
+    "dev": "tsdown --watch",
+    "build": "tsdown",
     "test": "vitest run --dir test",
     "check-types": "tsc --noEmit"
   },
@@ -21,8 +41,8 @@
     "@opentelemetry/auto-instrumentations-node": "^0.41.1",
     "@opentelemetry/exporter-trace-otlp-http": "^0.48.0",
     "@opentelemetry/sdk-node": "^0.48.0",
-    "@6edesign/messenger": "workspace:^0.2.6",
-    "@6edesign/tracing": "workspace:^0.2.6",
+    "@6edesign/messenger": "^0.2.5",
+    "@6edesign/tracing": "^0.2.5",
     "axios": "^1.6.5",
     "body-parser": "^1.20.2",
     "bull": "^4.12.2",
@@ -49,5 +69,8 @@
     "tsdown": "^0.13.0",
     "typescript": "^5.4.5",
     "vitest": "^1.6.0"
-  }
+  },
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts"
 }
