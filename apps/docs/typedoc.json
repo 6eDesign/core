@@ -1,0 +1,19 @@
+{
+  "$schema": "https://typedoc.org/schema.json",
+  "entryPointStrategy": "packages",
+  "entryPoints": ["../../packages/*"],
+  "exclude": ["../../packages/cicd", "../../packages/cli"],
+  "excludePrivate": true,
+  "excludeProtected": true,
+  "excludeInternal": true,
+  "hideGenerator": true,
+  "plugin": ["typedoc-plugin-markdown"],
+  "out": "static/api-docs",
+  "readme": "none",
+  "skipErrorChecking": true,
+  // "baseUrl": "/api/",
+  "useCodeBlocks": true,
+  "useHTMLEncodedBrackets": true,
+  "hostedBaseUrl": "http://localhost:5173/api/",
+  "useHostedBaseUrlForAbsoluteLinks": true   
+}
