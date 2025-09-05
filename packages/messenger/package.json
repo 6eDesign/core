@@ -4,6 +4,9 @@
   "type": "module",
   "types": "types/index.d.ts",
   "exports": {
+    ".": {
+      "import": "./lib/base.js"
+    },
     "./redis": {
       "import": "./lib/RedisEventBus.js"
     },

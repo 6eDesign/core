@@ -1,5 +1,6 @@
 node_modules
 
+/static/api-docs/
 # Output
 .output
 .vercel

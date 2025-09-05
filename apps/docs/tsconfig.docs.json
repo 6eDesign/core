@@ -1,0 +1,6 @@
+{
+  "extends": "@6edesign/tsconfig/node.json",
+  "include": [
+    "../../packages/**/src"
+  ]
+}

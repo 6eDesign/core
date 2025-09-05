@@ -60,5 +60,8 @@
     "extends": [
       "@6edesign/eslint-config/library.js"
     ]
+  },
+  "6e": {
+    "generateDocs": false
   }
 }

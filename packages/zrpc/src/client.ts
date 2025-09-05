@@ -27,7 +27,7 @@ const clientMethod = <TInput, TOutput>(
 				url: route.path,
 				...inputSetter(input)
 			})
-			.then(({ data }) => route.output.parse(data));
+			.then(({ data }) => (route.output ? route.output.parse(data) : data));
 };
 
 export const client = (sdkOptions: SDKOptions) => {

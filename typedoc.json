@@ -1,0 +1,7 @@
+{
+  "entryPoints": ["packages/*"],
+  "entryPointStrategy": "packages",
+  "includeVersion": false,
+  "plugin": ["typedoc-plugin-markdown"],
+  "exclude": ["packages/microservice", "packages/data-circuits", "packages/cli", "packages/cicd", "packages/messenger", "packages/eslint-config", "packages/tracing", "packages/tsconfig"]
+}

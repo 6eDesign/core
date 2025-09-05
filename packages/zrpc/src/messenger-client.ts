@@ -40,6 +40,10 @@ export const messsageClientFactory = <T extends Record<string, RouteOptions<any,
       const route = routes[key];
       messageClient[key] = clientMethod(channel, sdkOptions, route);
     }
-    return messageClient as { [K in keyof T]: (input: z.infer<T[K]['input']>) => Promise<void> };
+    return messageClient as {
+      [K in keyof T]: T[K]['input'] extends z.ZodType<any, any, any>
+        ? (input: z.infer<T[K]['input']>) => Promise<void>
+        : (input: void) => Promise<void>;
+    };
   };
 };

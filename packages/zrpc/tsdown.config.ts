@@ -5,9 +5,10 @@ export default defineConfig({
 		index: 'src/index.ts',
 		router: 'src/router.ts',
 		client: 'src/client.ts',
-		'messenger-client': 'src/messageClient.ts',
+		'messenger-client': 'src/messenger-client.ts',
 		zod: 'src/zod.ts'
 	},
+	sourcemap: true,
 	external: [],
 	platform: 'node',
 	format: ['esm', 'cjs'],

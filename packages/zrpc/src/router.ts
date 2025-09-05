@@ -1,7 +1,7 @@
 import { z } from './zod';
 import type { Request, Response, NextFunction, Handler } from 'express';
 import type { Tracer } from '@opentelemetry/api';
-import { OpenAPIOperation } from 'openapi3-ts/oas30';
+import { OperationObject } from 'openapi3-ts/oas30';
 
 export type HttpMethod = 'get' | 'post' | 'put' | 'delete' | 'patch';
 
@@ -10,7 +10,7 @@ export interface RouteOptions<TInput, TOutput> {
   method?: HttpMethod;
   input?: z.Schema<TInput> | z.ZodEffects<z.Schema<TInput>>;
   output?: z.Schema<TOutput>;
-  openapi?: OpenAPIOperation; // Add openapi property for route-level metadata
+  openapi?: OperationObject; // Add openapi property for route-level metadata
 }
 
 export const createRoute = <TInput, TOutput>({

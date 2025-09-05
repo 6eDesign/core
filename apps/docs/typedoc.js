@@ -1,9 +1,9 @@
 /** @type {Partial<import("typedoc").TypeDocOptions>} */
 const config = {
 	$schema: 'https://typedoc.org/schema.json',
-	entryPointStrategy: 'packages',
-	entryPoints: ['../../packages/zrpc'],
-	// exclude: ['../../packages/cicd', '../../packages/cli', '../../packages/microservice'],
+	tsconfig: './tsconfig.docs.json',
+	entryPointStrategy: 'resolve',
+	entryPoints: ['../../packages/**'],
 	excludePrivate: true,
 	excludeProtected: true,
 	excludeInternal: true,
