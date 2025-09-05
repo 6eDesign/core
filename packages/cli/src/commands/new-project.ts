@@ -184,7 +184,7 @@ export const newProjectCommand = defineCommand({
 			// Initialize Changesets if not skipped
 			if (skipChangesets !== 'true') {
 				console.log('Initializing Changesets...');
-				await execa('pnpm', ['dlx', '@changeset/cli', 'init'], {
+				await execa('pnpm', ['dlx', '@changesets/cli', 'init'], {
 					cwd: projectDir,
 					stdio: 'inherit'
 				});

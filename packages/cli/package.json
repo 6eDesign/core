@@ -7,6 +7,11 @@
   "bin": {
     "6e": "dist/index.mjs"
   },
+  "pnpm": {
+    "overrides": {
+      "uri-js": "npm:uri-js-replace"
+    }
+  },
   "publishConfig": {
     "access": "public"
   },
