@@ -1,5 +1,11 @@
 # @6edesign/cli
 
+## 0.1.13
+
+### Patch Changes
+
+- a7907df: fix: use dlx to init changesets, add changeset dep
+
 ## 0.1.12
 
 ### Patch Changes
