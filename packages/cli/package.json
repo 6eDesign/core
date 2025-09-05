@@ -1,6 +1,6 @@
 {
   "name": "@6edesign/cli",
-  "version": "0.1.13",
+  "version": "0.1.14",
   "description": "CLI for the 6edesign/zrpc framework",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
