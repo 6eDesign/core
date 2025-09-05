@@ -4,6 +4,9 @@
   "type": "module",
   "types": "types/index.d.ts",
   "exports": {
+    ".": {
+      "import": "./lib/base.js"
+    },
     "./redis": {
       "import": "./lib/RedisEventBus.js"
     },
@@ -20,7 +23,7 @@
     "lint": "echo 'Add lint script here'"
   },
   "devDependencies": {
-    "@6edesign/eslint-config": "workspace:^0.2.5",
+    "@6edesign/eslint-config": "workspace:^",
     "mocha": "^10.2.0",
     "supertest": "^6.3.4"
   },

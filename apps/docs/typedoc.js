@@ -2,8 +2,8 @@
 const config = {
 	$schema: 'https://typedoc.org/schema.json',
 	entryPointStrategy: 'packages',
-	entryPoints: ['../../packages/zrpc'],
-	// exclude: ['../../packages/cicd', '../../packages/cli', '../../packages/microservice'],
+	entryPoints: ['../../packages/*'],
+	exclude: ['../../packages/cicd', '../../packages/cli', '../../packages/microservice'],
 	excludePrivate: true,
 	excludeProtected: true,
 	excludeInternal: true,
