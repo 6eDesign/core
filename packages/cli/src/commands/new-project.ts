@@ -184,7 +184,10 @@ export const newProjectCommand = defineCommand({
 			// Initialize Changesets if not skipped
 			if (skipChangesets !== 'true') {
 				console.log('Initializing Changesets...');
-				await execa('pnpm', ['exec', 'changeset', 'init'], { cwd: projectDir, stdio: 'inherit' });
+				await execa('pnpm', ['dlx', '@changeset/cli', 'init'], {
+					cwd: projectDir,
+					stdio: 'inherit'
+				});
 
 				// Modify Changeset config.json
 				const changesetConfigPath = path.join(projectDir, '.changeset', 'config.json');
