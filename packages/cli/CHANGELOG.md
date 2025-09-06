@@ -1,5 +1,11 @@
 # @6edesign/cli
 
+## 0.1.15
+
+### Patch Changes
+
+- 3a33a8f: fix: localdev issue
+
 ## 0.1.14
 
 ### Patch Changes
