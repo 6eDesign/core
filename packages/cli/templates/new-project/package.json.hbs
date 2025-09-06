@@ -4,9 +4,10 @@
   "main": "index.js",
   "private": true,
   "scripts": {
-    "pretest": "docker compose up -d --wait",
+    "localcontainers": "[ ! -f docker-compose.yml ] || docker compose up -d --wait",
+    "pretest": "pnpm run localcontainers",
     "test": "turbo test",
-    "predev": "docker compose up -d --wait",
+    "predev": "pnpm run localcontainers",
     "dev": "turbo dev",
     "build": "turbo build",
     "check-types": "turbo run check-types",
