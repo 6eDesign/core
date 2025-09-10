@@ -6,10 +6,12 @@
   "main": "index.js",
   "exports": {
     ".": {
-      "import": "./index.js"
+      "import": "./index.js",
+      "types": "./types/index.d.ts"
     },
     "./circuit": {
-      "import": "./lib/circuits.js"
+      "import": "./lib/circuits.js",
+      "types": "./types/lib/circuits.d.ts"
     }
   },
   "publishConfig": {
