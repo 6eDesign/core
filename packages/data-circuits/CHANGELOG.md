@@ -1,5 +1,11 @@
 # @6edesign/data-circuits
 
+## 0.0.9
+
+### Patch Changes
+
+- 5123834: fix: package.json
+
 ## 0.0.8
 
 ### Patch Changes
