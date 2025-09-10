@@ -1,5 +1,11 @@
 # @6edesign/data-circuits
 
+## 0.0.10
+
+### Patch Changes
+
+- b6400af: fix: data-circuits config and docs
+
 ## 0.0.9
 
 ### Patch Changes
