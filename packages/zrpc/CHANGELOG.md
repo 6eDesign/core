@@ -1,5 +1,11 @@
 # @6edesign/zrpc
 
+## 0.0.4
+
+### Patch Changes
+
+- 16c8f9d: feat: zrpc context functionality for auth/similar
+
 ## 0.0.3
 
 ### Patch Changes
