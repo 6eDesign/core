@@ -1,70 +1,69 @@
 import { z } from './zod';
 import type { Request, Response, NextFunction, Handler } from 'express';
 import type { Tracer } from '@opentelemetry/api';
-import { OpenAPIOperation } from 'openapi3-ts/oas30';
+import { OperationObject } from 'openapi3-ts/oas30';
 
 export type HttpMethod = 'get' | 'post' | 'put' | 'delete' | 'patch';
 
 export interface RouteOptions<TInput, TOutput> {
-  path: string;
-  method?: HttpMethod;
-  input?: z.Schema<TInput> | z.ZodEffects<z.Schema<TInput>>;
-  output?: z.Schema<TOutput>;
-  openapi?: OpenAPIOperation; // Add openapi property for route-level metadata
+	path: string;
+	method?: HttpMethod;
+	input?: z.Schema<TInput> | z.ZodEffects<z.Schema<TInput>>;
+	output?: z.Schema<TOutput>;
+	openapi?: OperationObject; // Add openapi property for route-level metadata
 }
 
 export const createRoute = <TInput, TOutput>({
-  path,
-  method = 'get',
-  input = z.any() as z.Schema<TInput>,
-  output = z.any() as z.Schema<TOutput>,
-  openapi, // Destructure openapi property
+	path,
+	method = 'get',
+	input = z.any() as z.Schema<TInput>,
+	output = z.any() as z.Schema<TOutput>,
+	openapi // Destructure openapi property
 }: RouteOptions<TInput, TOutput>) => ({
-  path,
-  method,
-  input,
-  output,
-  openapi, // Pass it through
+	path,
+	method,
+	input,
+	output,
+	openapi // Pass it through
 });
 
-const getInputGetter = <TInput, TOutput>(
-  route: RouteOptions<TInput, TOutput>
-) => {
-  switch (route.method) {
-    case 'get':
-      return (req: Request) => route.input?.parse(req.query) as TInput;
-    default:
-      return (req: Request) => route.input?.parse(req.body) as TInput;
-  }
+const getInputGetter = <TInput, TOutput>(route: RouteOptions<TInput, TOutput>) => {
+	switch (route.method) {
+		case 'get':
+			return (req: Request) => route.input?.parse(req.query) as TInput;
+		default:
+			return (req: Request) => route.input?.parse(req.body) as TInput;
+	}
 };
 
-interface HttpResolverOptions<TInput, TOutput> {
-  route: RouteOptions<TInput, TOutput>;
-  resolver: (input: TInput) => Promise<TOutput>;
-  tracer?: Tracer; // Making tracer optional for now
+interface HttpResolverOptions<TInput, TOutput, TContext> {
+	route: RouteOptions<TInput, TOutput>;
+	resolver: (input: TInput, context: TContext) => Promise<TOutput>;
+	tracer?: Tracer; // Making tracer optional for now
+	context?: (req: Request) => Promise<TContext>;
 }
 
-export const createHTTPResolver = <TInput, TOutput>({
-  route,
-  resolver,
-}: HttpResolverOptions<TInput, TOutput>): Handler => {
-  return async (req: Request, res: Response) => {
-    const inputGetter = getInputGetter(route);
-    try {
-      const output = await resolver(inputGetter(req));
-      res.json(route.output?.parse(output));
-    } catch (e: any) {
-      if (e instanceof z.ZodError) {
-        return res.status(400).json({ errors: e.issues });
-      }
-      console.error(e);
-      res.status(500).json({ message: 'server error' });
-    }
-  };
+export const createHTTPResolver = <TInput, TOutput, TContext>({
+	route,
+	resolver,
+	context
+}: HttpResolverOptions<TInput, TOutput, TContext>): Handler => {
+	return async (req: Request, res: Response) => {
+		const inputGetter = getInputGetter(route);
+		try {
+			const contextObject = context ? await context(req) : ({} as TContext);
+			const output = await resolver(inputGetter(req), contextObject);
+			res.json(route.output?.parse(output));
+		} catch (e: any) {
+			if (e instanceof z.ZodError) {
+				return res.status(400).json({ errors: e.issues });
+			}
+			console.error(e);
+			res.status(500).json({ message: 'server error' });
+		}
+	};
 };
 
-export const getRouteKey = <TInput, TOutput>(
-  route: RouteOptions<TInput, TOutput>
-): string => {
-  return `${route.method}::${route.path}`;
+export const getRouteKey = <TInput, TOutput>(route: RouteOptions<TInput, TOutput>): string => {
+	return `${route.method}::${route.path}`;
 };
