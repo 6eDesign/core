@@ -52,3 +52,7 @@ export const clientFactory = <T extends Record<string, RouteOptions<any, any>>>(
 		return apiClient as ClientBuilder<T>;
 	};
 };
+
+export type ClientFactoryReturn<T extends Record<string, RouteOptions<any, any>>> = (
+	sdkOptions: SDKOptions
+) => ClientBuilder<T>;
