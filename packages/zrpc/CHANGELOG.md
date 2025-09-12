@@ -1,5 +1,11 @@
 # @6edesign/zrpc
 
+## 0.0.5
+
+### Patch Changes
+
+- 8a9bc82: fix: export additional type
+
 ## 0.0.4
 
 ### Patch Changes
