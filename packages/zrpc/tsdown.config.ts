@@ -12,6 +12,5 @@ export default defineConfig({
 	platform: 'node',
 	format: ['esm', 'cjs'],
 	dts: true,
-	splitting: false,
 	exports: true
 });

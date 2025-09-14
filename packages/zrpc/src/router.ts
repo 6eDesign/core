@@ -8,8 +8,8 @@ export type HttpMethod = 'get' | 'post' | 'put' | 'delete' | 'patch';
 export interface RouteOptions<TInput, TOutput> {
 	path: string;
 	method?: HttpMethod;
-	input?: z.Schema<TInput> | z.ZodEffects<z.Schema<TInput>>;
-	output?: z.Schema<TOutput>;
+	input: z.Schema<TInput> | z.ZodEffects<z.Schema<TInput>>;
+	output: z.Schema<TOutput>;
 	openapi?: OperationObject; // Add openapi property for route-level metadata
 }
 
