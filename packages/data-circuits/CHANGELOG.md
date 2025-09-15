@@ -1,5 +1,11 @@
 # @6edesign/data-circuits
 
+## 0.0.11
+
+### Patch Changes
+
+- 9bc157c: fix: use tsdown to bundle data-circuits + minor type correction for zrpc
+
 ## 0.0.10
 
 ### Patch Changes
