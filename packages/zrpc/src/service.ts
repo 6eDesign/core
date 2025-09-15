@@ -10,6 +10,8 @@ import { createHTTPResolver, getRouteKey, RouteOptions } from './router';
 import { BaseDistributedEventBus } from '@6edesign/messenger';
 import { OpenAPIObject } from 'openapi3-ts/oas30';
 import http from 'http';
+import { betterAuth } from 'better-auth';
+import { toNodeHandler } from 'better-auth/node';
 
 export interface Logger {
 	log: (level: string, message: string) => void;
@@ -27,6 +29,7 @@ export interface ZRPCServiceOptions<TContext = Record<string, any>> {
 	logger?: Logger;
 	eventBus?: BaseDistributedEventBus;
 	context?: (req: express.Request) => Promise<TContext>;
+	auth?: ReturnType<typeof betterAuth>;
 }
 
 export class ZRPCService<TContext = Record<string, any>> {
@@ -54,10 +57,20 @@ export class ZRPCService<TContext = Record<string, any>> {
 		}
 
 		if (options.useCors !== false) {
-			this.app.use(cors());
+			this.app.use(
+				cors({
+					methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+					credentials: true
+				})
+			);
 		}
+
 		if (options.useCompression !== false) {
 			this.app.use(compression());
+		}
+
+		if (options.auth) {
+			this.app.use(toNodeHandler(options.auth));
 		}
 
 		this.app.use(bodyParser.json());
