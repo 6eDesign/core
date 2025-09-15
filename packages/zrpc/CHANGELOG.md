@@ -1,5 +1,11 @@
 # @6edesign/zrpc
 
+## 0.0.6
+
+### Patch Changes
+
+- 9bc157c: fix: use tsdown to bundle data-circuits + minor type correction for zrpc
+
 ## 0.0.5
 
 ### Patch Changes
