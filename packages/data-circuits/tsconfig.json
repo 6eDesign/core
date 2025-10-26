@@ -1,17 +1,9 @@
 {
+  "extends": "@6edesign/tsconfig/node.json",
   "compilerOptions": {
-    "allowJs": true,
-    "checkJs": true,
-    "declaration": true,
-    "emitDeclarationOnly": false,
     "outDir": "./dist",
-    "rootDir": ".",
-    "moduleResolution": "NodeNext",
-    "module": "NodeNext",
-    "target": "ES2020",
-    "composite": true,
-    "tsBuildInfoFile": "./node_modules/.tsbuildinfo"
+    "rootDir": "./src"
   },
-  "include": ["./index.js", "./lib/**/*.js"],
-  "exclude": ["./dist", "./node_modules", "./test"]
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist"]
 }
