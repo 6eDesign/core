@@ -10,7 +10,9 @@
   "scripts": {
     "dev": "tsdown --watch",
     "build": "tsdown",
-    "test": "vitest run --dir test",
+    "pretest": "docker-compose up -d",
+    "test": "REDIS_URL=redis://localhost:6380 vitest run --dir test",
+    "posttest": "docker-compose down",
     "coverage": "vitest run --coverage",
     "check-types": "tsc --noEmit",
     "lint": "eslint ."
