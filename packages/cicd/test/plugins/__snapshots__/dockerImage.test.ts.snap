@@ -1,0 +1,85 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`dockerImagePlugin > should create a Pulumi Docker Image resource for generated type 1`] = `
+"FROM node:18-alpine AS base
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+RUN corepack enable
+ENV MY_ENV_VAR=my-value
+RUN apk add --no-cache git
+WORKDIR /app
+
+# ---- Prune stage ----
+FROM base AS pruning
+ARG workspace
+COPY . /app/
+RUN npx turbo@$(node -p -e "require('./package.json').devDependencies['turbo']") prune --scope=\${workspace} --docker --out-dir=/app/pruned
+
+# ---- Dependencies ----
+FROM base AS deps
+COPY --from=pruning /app/pruned/json/ /app/
+RUN pnpm install --frozen-lockfile
+
+# ---- Build ----
+FROM base AS build
+ARG workspace
+COPY --from=deps /app/ /app/
+COPY --from=pruning /app/pruned/full/ /app/
+RUN npx turbo@$(node -p -e "require('./package.json').devDependencies['turbo']") run build --filter=\${workspace}
+
+# ---- Deploy (prune) ----
+FROM base AS deploy
+ARG workspace
+COPY --from=build /app/ /app/
+RUN pnpm deploy --filter=\${workspace} --prod /prod/app
+
+# ---- Final image ----
+FROM base AS prod
+COPY --from=deploy /prod/app /prod/app
+WORKDIR /prod/app
+EXPOSE 8080
+ENV NODE_ENV=production
+CMD node index.js"
+`;
+
+exports[`dockerImagePlugin > should handle missing optional generated build options 1`] = `
+"FROM node:18-alpine AS base
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+RUN corepack enable
+
+
+WORKDIR /app
+
+# ---- Prune stage ----
+FROM base AS pruning
+ARG workspace
+COPY . /app/
+RUN npx turbo@$(node -p -e "require('./package.json').devDependencies['turbo']") prune --scope=\${workspace} --docker --out-dir=/app/pruned
+
+# ---- Dependencies ----
+FROM base AS deps
+COPY --from=pruning /app/pruned/json/ /app/
+RUN pnpm install --frozen-lockfile
+
+# ---- Build ----
+FROM base AS build
+ARG workspace
+COPY --from=deps /app/ /app/
+COPY --from=pruning /app/pruned/full/ /app/
+RUN npx turbo@$(node -p -e "require('./package.json').devDependencies['turbo']") run build --filter=\${workspace}
+
+# ---- Deploy (prune) ----
+FROM base AS deploy
+ARG workspace
+COPY --from=build /app/ /app/
+RUN pnpm deploy --filter=\${workspace} --prod /prod/app
+
+# ---- Final image ----
+FROM base AS prod
+COPY --from=deploy /prod/app /prod/app
+WORKDIR /prod/app
+EXPOSE 8080
+ENV NODE_ENV=production
+CMD node server.js"
+`;

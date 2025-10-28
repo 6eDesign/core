@@ -74,16 +74,21 @@ export const deployCommand = defineCommand({
 			}
 		},
 		dryRun: {
-			schema: z.boolean().optional(),
+			schema: z
+				.string()
+				.optional()
+				.transform((val) => val === 'true'),
 			description: 'Perform a dry run without executing external actions'
 		},
 		debug: {
-			schema: z.boolean().optional(),
+			schema: z
+				.string()
+				.optional()
+				.transform((val) => val === 'true'),
 			description: 'Enable debug logging'
 		}
 	},
 	handler: async (input) => {
-		input;
 		const workspaceService = new WorkspaceService();
 		const configService = new ConfigService();
 		const deploymentService = new DeploymentService();
@@ -112,7 +117,7 @@ export const deployCommand = defineCommand({
 
 		if (input.deployable === '*') {
 			await deploymentService.executeAll(cicd, workspaceConfig.config, selectedWorkspace.name, {
-				dryRun: !!input.dryRun,
+				dryRun: input.dryRun,
 				environment: input.environment,
 				version: input.version,
 				debug: !!input.debug
