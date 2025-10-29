@@ -135,3 +135,6 @@ build/
 .next/
 .nuxt/
 .vercel/
+
+.pulumi/
+Pulumi*.yaml

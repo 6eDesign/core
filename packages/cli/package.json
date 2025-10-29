@@ -19,7 +19,8 @@
     "dev": "tsdown --watch --sourcemap src/index.ts",
     "build": "tsdown --sourcemap src/index.ts",
     "start": "node dist/index.js",
-    "test": "vitest run --dir test"
+    "test": "vitest run --dir test",
+    "test:watch": "vitest --dir test"
   },
   "dependencies": {
     "@dagrejs/graphlib": "^2.2.4",
