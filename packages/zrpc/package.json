@@ -6,7 +6,7 @@
     "access": "public"
   },
   "scripts": {
-    "dev": "tsdown --watch",
+    "dev": "tsdown --watch src/",
     "build": "tsdown",
     "test": "vitest run --dir test",
     "check-types": "tsc --noEmit"

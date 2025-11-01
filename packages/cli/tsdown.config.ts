@@ -1,12 +1,13 @@
 import { defineConfig } from 'tsdown';
 
 export default defineConfig({
-  entry: {
-    index: 'src/index.ts',
-  },
-  format: ['esm', 'cjs'],
-  dts: true,
-  exports: true,
-  external: ['@pulumi/pulumi'],
-  platform: 'node',
+	entry: {
+		index: 'src/index.ts'
+	},
+	format: ['esm', 'cjs'],
+	dts: true,
+	exports: true,
+	external: ['@pulumi/pulumi'],
+	platform: 'node',
+	ignoreWatch: ['.turbo/']
 });

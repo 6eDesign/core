@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { DeploymentService } from '../../src/services/deployment.service';
 import { EnvSecretProvider } from '../../src/services/envSecretProvider';
-import { CicdEngine, createPlugin } from '@6edesign/cicd';
+import cicd, { CicdEngine, createPlugin } from '@6edesign/cicd';
 import { z } from 'zod';
 import { execa } from 'execa';
 import * as fs from 'fs/promises';
@@ -38,6 +38,8 @@ describe('DeploymentService', () => {
 		(deploymentService as any).secretProvider = mockEnvSecretProvider;
 
 		mockCicdEngine = {
+			defineProjectConfig: vi.fn(),
+			createChildCicdEngine: vi.fn(),
 			plugins: {
 				dockerImage: createPlugin({
 					input: z.object({ name: z.string() }),
@@ -80,6 +82,8 @@ describe('DeploymentService', () => {
 	});
 
 	it('should successfully deploy a deployable with required secrets when secrets are present', async () => {
+
+    const config = 
 		const cicdConfig = {
 			deployables: [
 				{
@@ -92,7 +96,10 @@ describe('DeploymentService', () => {
 
 		const options = { dryRun: false, environment: 'dev' }; // Explicitly define options
 
-		await deploymentService.execute(mockCicdEngine, cicdConfig, 'my-app', options); // Pass the options object
+		await deploymentService.execute(mockCicdEngine, cicdConfig, 'my-app', '@scope/name', {
+			dryRun: false,
+			environment: 'dev'
+		}); // Pass the options object
 
 		// The deployHandler is now called within the Pulumi program, so we don't assert its direct invocation here.
 		// Instead, we assert on the Pulumi commands being executed by execa.
