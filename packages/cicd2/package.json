@@ -1,0 +1,42 @@
+{
+  "name": "@6edesign/cicd2",
+  "version": "0.0.1",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "types": "./dist/index.d.cts",
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "dev": "tsdown --watch --sourcemap --copy src/templates src/index.ts",
+    "build": "tsdown --sourcemap --copy src/templates",
+    "test": "vitest run --dir test"
+  },
+  "dependencies": {
+    "zod": "^4.0.5",
+    "zx": "^8.8.5"
+  },
+  "peerDependencies": {
+    "@pulumi/docker": "^4.8.0",
+    "@pulumi/docker-build": "^0.0.12",
+    "@pulumi/pulumi": "^3.187.0"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@6edesign/tsconfig": "workspace:^0.0.6",
+    "@vitest/coverage-v8": "^3.2.4",
+    "tsdown": "^0.15.2",
+    "vitest": "^1.6.0",
+    "zod": "^4.0.5"
+  },
+  "module": "./dist/index.js",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./package.json": "./package.json"
+  }
+}
