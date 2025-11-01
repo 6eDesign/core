@@ -105,19 +105,15 @@ export class Engine<TPlugins extends PluginMap> {
 		return { __pluginType: name, ...input };
 	}
 
-	defineWorkspaceConfig<T extends Record<string, { config: any; dependsOn?: ReadonlyArray<string> }>>(
-		config: {
-			deployables: T;
-		}
-	): {
+	defineWorkspaceConfig<T extends Record<string, DeployableEntry<TPlugins, any>>>(config: {
 		deployables: {
 			[K in keyof T]: {
-				config: z.infer<TPlugins[keyof TPlugins]['input']> & { __pluginType: keyof TPlugins };
+				config: T[K]['config'];
 				dependsOn?: Array<Exclude<keyof T, K>>;
 			};
 		};
-	} {
-		return config as any;
+	}) {
+		return config;
 	}
 
 	async deploy(options: DeployOptions) {
