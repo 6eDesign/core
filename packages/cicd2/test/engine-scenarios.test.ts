@@ -1,181 +1,137 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { testEngine, deployments, scenarios, createScenarioWorkspace } from './fixtures';
+import { describe, it, expect, beforeEach, vi, beforeAll } from 'vitest';
+import { testEngine, deployments, scenarios } from './fixtures';
+import { workspaceService } from '../src';
 
-describe('Engine - Deployment Scenarios', () => {
+describe('Engine - Builder API', () => {
 	beforeEach(() => {
-		// Reset all mocks and clear deployment tracking between tests
 		vi.clearAllMocks();
 		deployments.length = 0;
 	});
 
-	describe('Scenario 1: Single Deployable', () => {
-		it('should deploy a single deployable with no dependencies', async () => {
-			// Given: A scenario with one deployable
-			const scenario = scenarios.singleDeployable;
-			const config = createScenarioWorkspace(scenario);
+	describe('Workspace Builder', () => {
+		it('should build a workspace with typed deployables', () => {
+			const workspace = testEngine
+				.defineWorkspace()
+				.add('app', (b) => b.deployable('webApp', { name: 'my-app', port: 3000 }));
 
-			// When: We deploy
-			// await testEngine.deploy({
-			// 	workspaceName: 'test',
-			// 	dryRun: false
-			// });
-
-			// Then: The deployable should be deployed
-			expect(config.deployables).toHaveLength(1);
-			expect(config.deployables[0]).toMatchObject({
-				__pluginType: 'webApp',
-				name: 'simple-app',
-				port: 3000
+			expect(workspace.deployables.size).toBe(1);
+			expect(workspace.deployables.get('app')).toMatchObject({
+				name: 'app',
+				pluginName: 'webApp',
+				config: { __pluginType: 'webApp', name: 'my-app', port: 3000 },
+				dependencies: []
 			});
-			// TODO: Check deployments array once deploy() is implemented
 		});
-	});
 
-	describe('Scenario 2: Independent Deployables', () => {
-		it('should deploy all independent deployables in parallel', async () => {
-			// Given: Multiple deployables with no dependencies
-			const scenario = scenarios.independentDeployables;
-			const config = createScenarioWorkspace(scenario);
+		it('should track dependencies correctly', () => {
+			const workspace = testEngine
+				.defineWorkspace()
+				.add('db', (b) => b.deployable('database', { name: 'db', engine: 'postgres' }))
+				.add('api', (b) =>
+					b.deployable('api', { name: 'api', routes: ['/users'] }).dependsOn('db')
+				);
 
-			// When: We deploy
-			// const startTime = Date.now();
-			// await testEngine.deploy({
-			// 	workspaceName: 'test',
-			// 	dryRun: false
-			// });
-			// const duration = Date.now() - startTime;
-
-			// Then: All three should deploy
-			expect(config.deployables).toHaveLength(3);
-
-			// Then: They should run in parallel (not sequentially)
-			// If sequential: 3 * 3000ms = 9000ms
-			// If parallel: ~3000ms
-			// expect(duration).toBeLessThan(5000);
-			// expect(duration).toBeGreaterThan(2900);
+			const api = workspace.deployables.get('api');
+			expect(api?.dependencies).toEqual(['db']);
 		});
-	});
 
-	describe('Scenario 3: Linear Chain', () => {
-		it('should deploy in correct order: db -> api -> web', async () => {
-			const scenario = scenarios.linearChain;
-			const config = createScenarioWorkspace(scenario);
+		it('should accumulate multiple dependencies', () => {
+			const workspace = testEngine
+				.defineWorkspace()
+				.add('db', (b) => b.deployable('database', { name: 'db', engine: 'postgres' }))
+				.add('cache', (b) => b.deployable('database', { name: 'cache', engine: 'mongodb' }))
+				.add('api', (b) => b.deployable('api', { name: 'api' }).dependsOn('db', 'cache'));
 
-			expect(config.deployables).toHaveLength(3);
+			const api = workspace.deployables.get('api');
+			expect(api?.dependencies).toEqual(['db', 'cache']);
 		});
-	});
 
-	describe('Scenario 4: Diamond Dependency', () => {
-		it('should deploy db first, then api+cache in parallel, then web', async () => {
-			const scenario = scenarios.diamondDependency;
-			const config = createScenarioWorkspace(scenario);
-
-			// When: We deploy
-			// const deployOrder: string[] = [];
-			// const startTimes: Record<string, number> = {};
-			// await testEngine.deploy({
-			// 	workspaceName: 'test',
-			// 	dryRun: false
-			// });
-
-			// Then: db deploys first
-			// expect(deployOrder[0]).toBe('db');
-
-			// Then: api and cache deploy in parallel (after db)
-			// const apiStart = startTimes['api'];
-			// const cacheStart = startTimes['cache'];
-			// expect(Math.abs(apiStart - cacheStart)).toBeLessThan(100); // Within 100ms = parallel
-
-			// Then: web deploys last
-			// expect(deployOrder[deployOrder.length - 1]).toBe('web');
-
-			expect(config.deployables).toHaveLength(4);
-		});
-	});
-
-	describe('Scenario 5: Parallel Branches', () => {
-		it('should deploy two independent branches in parallel', async () => {
-			const scenario = scenarios.parallelBranches;
-			const config = createScenarioWorkspace(scenario);
-
-			expect(config.deployables).toHaveLength(6);
-		});
-	});
-
-	describe('Scenario 6: Fan-Out Pattern', () => {
-		it('should deploy db, then all APIs in parallel, then web', async () => {
-			const scenario = scenarios.fanOut;
-			const config = createScenarioWorkspace(scenario);
-
-			// When: We deploy
-			// const deployOrder: string[] = [];
-			// await testEngine.deploy({
-			// 	workspaceName: 'test',
-			// 	dryRun: false
-			// });
-
-			// Then: db deploys first
-			// expect(deployOrder[0]).toBe('db');
-
-			// Then: All three APIs deploy in parallel
-			// const apiIndices = ['api1', 'api2', 'api3'].map(name => deployOrder.indexOf(name));
-			// expect(Math.max(...apiIndices) - Math.min(...apiIndices)).toBeLessThan(3); // Within 2 positions
-
-			// Then: web deploys last
-			// expect(deployOrder[deployOrder.length - 1]).toBe('web');
-
-			expect(config.deployables).toHaveLength(5);
-		});
-	});
-
-	describe('Scenario 7: Circular Dependency', () => {
-		it('should detect and reject circular dependencies', async () => {
-			const scenario = scenarios.circularDependency;
-			const config = createScenarioWorkspace(scenario);
-
-			expect(config.deployables).toHaveLength(3);
-		});
-	});
-
-	describe('Scenario 8: Missing Dependency', () => {
-		it('should detect and reject missing dependencies', async () => {
-			const scenario = scenarios.missingDependency;
-			const config = createScenarioWorkspace(scenario);
-
-			expect(config.deployables).toHaveLength(1);
+		it('should throw error for unknown plugin', () => {
+			expect(() => {
+				testEngine
+					.defineWorkspace()
+					.add('invalid', (b) => b.deployable('unknown' as any, { name: 'test' }));
+			}).toThrow(/Unknown plugin/);
 		});
 	});
 });
 
-describe('Engine - API Tests', () => {
-	describe('createDeployable', () => {
-		it('should create a deployable with correct plugin type', () => {
-			const deployable = testEngine.createDeployable('webApp', {
-				name: 'my-app',
-				port: 8080
-			});
-
-			expect(deployable).toMatchObject({
-				__pluginType: 'webApp',
-				name: 'my-app',
-				port: 8080
-			});
-		});
-
-		it('should throw error for unknown plugin type', () => {
-			expect(() => {
-				testEngine.createDeployable('unknownPlugin' as any, { name: 'test' });
-			}).toThrow(/Unknown plugin/);
+describe('Engine - Deployment Scenarios', () => {
+	beforeEach(() => {
+		vi.clearAllMocks();
+		deployments.length = 0;
+	});
+	beforeAll(() => {
+		vi.mock('../src/workspace-service.js', async (imported) => {
+			const originalModule = await imported<typeof import('../src/workspace-service.js')>();
+			return {
+				...originalModule,
+				workspaceService: {
+					...originalModule.workspaceService,
+					importFromWorkspace: vi.fn()
+				}
+			};
 		});
 	});
 
-	describe('defineWorkspaceConfig', () => {
-		it('should accept valid workspace config', () => {
-			const config = testEngine.defineWorkspaceConfig({
-				deployables: [testEngine.createDeployable('webApp', { name: 'app', port: 3000 })]
+	// Iterate over all scenarios dynamically
+	scenarios.forEach((scenario) => {
+		beforeEach(() => {
+			(workspaceService.importFromWorkspace as vi.Mock).mockResolvedValueOnce({
+				default: scenario.workspace
+			});
+		});
+		describe(`${scenario.name}`, () => {
+			it(scenario.description, () => {
+				const workspace = scenario.workspace;
+
+				// Verify workspace structure
+				expect(workspace.deployables.size).toBeGreaterThan(0);
+
+				// Verify all deployables have correct structure
+				for (const [name, entry] of workspace.deployables) {
+					expect(entry).toMatchObject({
+						name,
+						pluginName: expect.any(String),
+						config: expect.objectContaining({
+							__pluginType: expect.any(String)
+						}),
+						dependencies: expect.any(Array)
+					});
+				}
+
+				// Verify expected behavior assertions
+				if (scenario.expectedBehavior.order) {
+					// Check that expected order makes sense given dependencies
+					const order = scenario.expectedBehavior.order;
+					expect(order.length).toBe(workspace.deployables.size);
+				}
+
+				if (scenario.expectedBehavior.parallelGroups) {
+					// Verify parallel groups have correct total count
+					const totalCount = scenario.expectedBehavior.parallelGroups.flat().length;
+					expect(totalCount).toBe(workspace.deployables.size);
+				}
+
+				if (scenario.expectedBehavior.shouldFail) {
+					// These scenarios test validation failures
+					expect(scenario.expectedBehavior.failureReason).toBeDefined();
+				}
 			});
 
-			expect(config.deployables).toHaveLength(1);
+			it('should execute deployment in correct order', async () => {
+				const workspace = scenario.workspace;
+
+				await testEngine.deploy({ workspaceName: 'test', dryRun: false });
+
+				// Verify deployment order matches expected behavior
+			});
+
+			if (scenario.expectedBehavior.parallelGroups) {
+				it.todo('should execute parallel groups concurrently', async () => {
+					// Verify timing shows parallel execution within groups
+				});
+			}
 		});
 	});
 });

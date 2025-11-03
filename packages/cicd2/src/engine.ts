@@ -32,13 +32,14 @@ export class Engine<TPlugins extends PluginMap> {
 
 	async deploy(options: DeployOptions) {
 		// get config from workspace, validate config, deeply, against plugins
-		const config = await workspaceService.importFromWorkspace<{
+		const {
+			default: { deployables }
+		} = await workspaceService.importFromWorkspace<{
 			default: WorkspaceBuilder<TPlugins>;
 		}>(options.workspaceName, 'cicd.config.js');
 
 		// determine correct deployment order while doing things in parallel where possible (all same-level deployables together)
-		const workspaceBuilder = config.default;
-		workspaceBuilder.deployables;
+		console.log('Deployables:', Array.from(deployables.keys()));
 
 		// for each deployable, find correct plugin and call deployHandler with input and context (replacing zx w/ logger when dryRun:true)
 	}
