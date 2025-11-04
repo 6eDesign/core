@@ -75,6 +75,8 @@ export class Engine<TPlugins extends PluginMap> {
 		}>(options.workspaceName, 'cicd.config.js');
 
 		// determine correct deployment order while doing things in parallel where possible (all same-level deployables together)
+		// for each deployable, find correct plugin and call deployHandler with input and context (replacing zx w/ logger when dryRun:true)
+
 		await Promise.all(
 			Array.from(deployables.entries()).map(async ([name, deployable]) => {
 				// find correct plugin
@@ -109,8 +111,6 @@ export class Engine<TPlugins extends PluginMap> {
 				deployables.get(name)?.setDeploymentState('deployed');
 			})
 		);
-
-		// for each deployable, find correct plugin and call deployHandler with input and context (replacing zx w/ logger when dryRun:true)
 	}
 
 	async deployMany(configs: DeployOptions[]) {
