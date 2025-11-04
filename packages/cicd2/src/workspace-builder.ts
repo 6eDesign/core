@@ -1,11 +1,14 @@
 import { z } from 'zod';
-import type { PluginMap, Simplify, OutputKeys } from './types.js';
+import type { PluginMap, Simplify, OutputKeys, DeploymentState } from './types.js';
 
 /**
  * Represents a deployable with its configuration and dependencies.
  * The generic `TAvailableDeps` constrains which deployables can be referenced in `dependsOn()`.
  */
 export class DeployableEntry<TAvailableDeps extends string = never> {
+	private state: DeploymentState = 'pending';
+	private subscribers: Array<() => void> = [];
+
 	constructor(
 		readonly name: string,
 		readonly pluginName: string,
@@ -18,6 +21,20 @@ export class DeployableEntry<TAvailableDeps extends string = never> {
 			...this.dependencies,
 			...deps
 		]) as this;
+	}
+
+	setDeploymentState(newState: DeploymentState): void {
+		this.state = newState;
+		if (newState === 'deployed') {
+			this.subscribers.forEach((cb) => cb());
+			this.subscribers = [];
+		}
+	}
+
+	async deploy(): Promise<void> {
+		return new Promise((res) => {
+			this.subscribers.push(res);
+		});
 	}
 }
 
@@ -56,6 +73,7 @@ export class WorkspaceBuilder<
 		const entry = cb(this);
 		this.deployables.set(name, entry);
 		this.currentDeployableName = null;
+
 		return this as any; // Safe: type assertion to thread accumulated TDefined
 	}
 

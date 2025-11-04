@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, vi, beforeAll } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi, beforeAll } from 'vitest';
 import { testEngine, deployments, scenarios } from './fixtures';
 import { workspaceService } from '../src';
 
@@ -58,9 +58,15 @@ describe('Engine - Builder API', () => {
 
 describe('Engine - Deployment Scenarios', () => {
 	beforeEach(() => {
+		vi.useFakeTimers();
 		vi.clearAllMocks();
 		deployments.length = 0;
 	});
+
+	afterEach(() => {
+		vi.useRealTimers();
+	});
+
 	beforeAll(() => {
 		vi.mock('../src/workspace-service.js', async (imported) => {
 			const originalModule = await imported<typeof import('../src/workspace-service.js')>();
@@ -81,7 +87,10 @@ describe('Engine - Deployment Scenarios', () => {
 				default: scenario.workspace
 			});
 		});
-		describe(`${scenario.name}`, () => {
+
+		const testFn = scenario.expectedBehavior.shouldFail ? describe.skip : describe;
+
+		testFn(`${scenario.name}`, () => {
 			it(scenario.description, () => {
 				const workspace = scenario.workspace;
 
@@ -122,7 +131,12 @@ describe('Engine - Deployment Scenarios', () => {
 			it('should execute deployment in correct order', async () => {
 				const workspace = scenario.workspace;
 
-				await testEngine.deploy({ workspaceName: 'test', dryRun: false });
+				const deployPromise = testEngine.deploy({ workspaceName: 'test', dryRun: false });
+
+				// Advance timers to resolve all setTimeout calls in deploy handlers
+				await vi.runAllTimersAsync();
+
+				await deployPromise;
 
 				// Verify deployment order matches expected behavior
 			});

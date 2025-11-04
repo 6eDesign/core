@@ -15,6 +15,8 @@ export interface DeployOptions {
 	workspaceName: string;
 }
 
+export type DeploymentState = 'pending' | 'deploying' | 'deployed';
+
 export interface DeployablePlugin<
 	TInput = any,
 	TOutput = any,
