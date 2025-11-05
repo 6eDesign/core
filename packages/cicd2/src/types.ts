@@ -46,8 +46,10 @@ export type Simplify<T> = { [K in keyof T]: T[K] };
  * Extracts the output keys from a plugin's output schema for type-safe output references.
  * Returns `string` if the plugin has no output schema.
  */
-export type OutputKeys<TPlugin> = TPlugin extends { output: z.Schema<infer TOutput> }
-	? keyof TOutput & string
+export type OutputKeys<TPlugin> = TPlugin extends { output?: infer TSchema }
+	? TSchema extends z.ZodObject<any, any>
+		? keyof z.infer<TSchema> & string
+		: string
 	: string;
 
 export function createSecretProvider<TSecrets extends RequiredSecrets>(
