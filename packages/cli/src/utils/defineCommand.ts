@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { InquirerPromptSchema } from '../types/cli';
 
 export function createSchema<T extends Record<string, { schema: z.ZodSchema }>>(
 	config: T
@@ -10,11 +11,27 @@ export function createSchema<T extends Record<string, { schema: z.ZodSchema }>>(
 	);
 }
 
-export function defineCommand<T extends Record<string, { schema: z.ZodSchema }>>(command: {
+type InputsConfig = Record<
+	string,
+	{ schema: z.ZodSchema; promptConfig?: z.infer<typeof InquirerPromptSchema> }
+>;
+
+type CommandHandler<T extends InputsConfig> = (
+	input: z.infer<z.ZodObject<{ [K in keyof T]: T[K]['schema'] }>>
+) => Promise<void>;
+
+interface BaseCommand<T extends InputsConfig> {
 	name: string;
 	description: string;
-	inputs: T;
-	handler: (input: z.infer<z.ZodObject<{ [K in keyof T]: T[K]['schema'] }>>) => Promise<void>;
-}) {
+	inputs?: T;
+}
+
+interface TypicalCommand<T extends InputsConfig> extends BaseCommand<T> {
+	handler: CommandHandler<T>;
+}
+
+type Command<T extends InputsConfig> = TypicalCommand<T>;
+
+export function defineCommand<T extends InputsConfig>(command: Command<T>) {
 	return command;
 }

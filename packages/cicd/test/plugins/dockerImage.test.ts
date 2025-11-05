@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import * as fs from 'fs';
 import path from 'path';
-import { Image as mockedDockerImage } from '@pulumi/docker';
+import { Image as mockedDockerImage } from '@pulumi/docker-build';
 
 vi.mock('fs', async (importOriginal) => {
 	const actual = await importOriginal<typeof fs>();
@@ -18,13 +18,12 @@ vi.mock('fs', async (importOriginal) => {
 					return actual.promises.readFile(templatePath, encoding);
 				}
 				return actual.promises.readFile(filePath, encoding);
-			}),
-			writeFile: vi.fn()
+			})
 		}
 	};
 });
 
-vi.mock('@pulumi/docker', () => ({
+vi.mock('@pulumi/docker-build', () => ({
 	Image: vi.fn()
 }));
 
@@ -32,103 +31,27 @@ vi.mock('@pulumi/docker', () => ({
 import { dockerImagePlugin } from '../../src/plugins/dockerImage';
 
 describe('dockerImagePlugin', () => {
-	// Spy on console.log to capture its output
-	const consoleLogSpy = vi.spyOn(console, 'log');
-
-	// Clear mocks before each test
 	beforeEach(() => {
-		vi.mocked(fs.promises.writeFile).mockClear();
 		vi.mocked(mockedDockerImage).mockClear();
-		consoleLogSpy.mockClear();
 	});
 
 	const mockContext = {
-		dryRun: true,
+		dryRun: false,
 		secretProvider: {
 			getSecret: vi.fn((key) => {
-				if (key === 'DOCKER_USERNAME') return 'testuser';
-				if (key === 'DOCKER_PASSWORD') return 'testpass';
-				return undefined;
+				if (key === 'DOCKER_USERNAME') return Promise.resolve('testuser');
+				if (key === 'DOCKER_PASSWORD') return Promise.resolve('testpass');
+				return Promise.resolve(undefined);
 			})
-		}
+		},
+		version: '1.2.3'
 	};
 
-	it('should generate Dockerfile content correctly for generated type in dry run', async () => {
+	it('should create a Pulumi Docker Image resource for generated type', async () => {
 		const config = {
 			name: 'test-app',
 			image: 'test-image',
-			build: {
-				type: 'generated',
-				baseImage: 'node:18-alpine',
-				osDependenciesInstallCommand: 'RUN apk add --no-cache git',
-				workspace: 'apps/test-app',
-				cmd: 'node index.js',
-				env: {
-					MY_ENV_VAR: 'my-value'
-				}
-			}
-		};
-
-		await dockerImagePlugin.deployHandler(config as any, mockContext as any);
-
-		expect(fs.promises.writeFile).toHaveBeenCalledTimes(0); // Should not write in dry run
-		expect(mockedDockerImage).toHaveBeenCalledTimes(0); // Should not create Pulumi resource in dry run
-		const logOutput = vi.mocked(console.log).mock.calls[1][0]; // Get the dry run log output
-
-		expect(logOutput).toContain('FROM node:18-alpine AS base');
-		expect(logOutput).toContain('ENV PNPM_HOME="/pnpm"');
-		expect(logOutput).toContain('ENV PATH="$PNPM_HOME:$PATH"');
-		expect(logOutput).toContain('RUN corepack enable');
-		expect(logOutput).toContain('ENV MY_ENV_VAR=my-value');
-		expect(logOutput).toContain('RUN apk add --no-cache git');
-		expect(logOutput).toContain('CMD node index.js');
-	});
-
-	it('should handle missing osDependenciesInstallCommand and env correctly in dry run', async () => {
-		const config = {
-			name: 'test-app-no-deps',
-			image: 'test-image-no-deps',
-			build: {
-				type: 'generated',
-				baseImage: 'node:18-alpine',
-				workspace: 'apps/test-app-no-deps',
-				cmd: 'node index.js'
-			}
-		};
-
-		await dockerImagePlugin.deployHandler(config as any, mockContext as any);
-
-		expect(fs.promises.writeFile).toHaveBeenCalledTimes(0);
-		expect(mockedDockerImage).toHaveBeenCalledTimes(0);
-		const logOutput = vi.mocked(console.log).mock.calls[1][0];
-
-		expect(logOutput).not.toContain('OS_DEPENDENCIES_INSTALL'); // Should not contain placeholder
-		expect(logOutput).not.toContain('{{ENV_VARS}}'); // Should not contain the ENV_VARS placeholder
-	});
-
-	it('should not generate Dockerfile content for file type in dry run', async () => {
-		const config = {
-			name: 'test-app-file',
-			image: 'test-image-file',
-			build: {
-				type: 'file',
-				file: './Dockerfile',
-				context: '.'
-			}
-		};
-
-		await dockerImagePlugin.deployHandler(config as any, mockContext as any);
-
-		expect(fs.promises.writeFile).toHaveBeenCalledTimes(0); // Should not write for file type
-		expect(mockedDockerImage).toHaveBeenCalledTimes(0); // Should not create Pulumi resource
-	});
-
-	it('should create a Pulumi Docker Image resource for generated type in non-dry run', async () => {
-		const nonDryRunContext = { ...mockContext, dryRun: false };
-		const config = {
-			name: 'test-app-non-dry-run',
-			image: 'test-image-non-dry-run',
-			tag: 'v1.0.0',
+			additionalTags: ['latest', 'beta'],
 			registry: 'myregistry.com',
 			args: {
 				BUILD_ARG_KEY: 'build-arg-value'
@@ -146,44 +69,61 @@ describe('dockerImagePlugin', () => {
 			}
 		};
 
-		await dockerImagePlugin.deployHandler(config as any, nonDryRunContext as any);
+		await dockerImagePlugin.deployHandler(config as any, mockContext as any);
 
-		expect(fs.promises.writeFile).toHaveBeenCalledTimes(1); // Should write generated Dockerfile
-		expect(mockedDockerImage).toHaveBeenCalledTimes(1); // Should create Pulumi resource
+		expect(mockedDockerImage).toHaveBeenCalledTimes(1);
 
-		const expectedImageName = 'myregistry.com/test-image-non-dry-run:v1.0.0';
-		const expectedBuildContext = '.';
-		const expectedDockerfile = `/tmp/Dockerfile.${config.name}`;
-		const expectedBuildArgs = { BUILD_ARG_KEY: 'build-arg-value' };
-		const expectedTarget = 'builder';
-		const expectedRegistryAuth = [
-			{
-				username: 'testuser',
-				password: 'testpass',
-				server: 'myregistry.com'
-			}
-		];
+		const [imageName, imageArgs] = vi.mocked(mockedDockerImage).mock.calls[0];
+		expect(imageName).toBe('test-app');
 
-		expect(mockedDockerImage).toHaveBeenCalledWith(
-			config.name,
-			expect.objectContaining({
-				imageName: expectedImageName,
-				build: expect.objectContaining({
-					context: expectedBuildContext,
-					dockerfile: expectedDockerfile,
-					args: expectedBuildArgs,
-					target: expectedTarget
-				}),
-				registryAuth: expectedRegistryAuth
-			})
-		);
+		// Verify tags
+		expect(imageArgs.tags).toEqual([
+			'test-image:test-app',
+			'test-image:test-app-v1.2.3',
+			'test-image:test-app-latest',
+			'test-image:test-app-beta'
+		]);
+
+		// Verify Dockerfile content
+		const inlineDockerfile = imageArgs.dockerfile.inline;
+		expect(inlineDockerfile).toMatchSnapshot();
+
+		// Verify build context and other args
+		expect(imageArgs.context.location).toBe('.');
+		expect(imageArgs.buildArgs).toEqual({ BUILD_ARG_KEY: 'build-arg-value' });
+		expect(imageArgs.target).toBe('builder');
+
+		// Verify registry auth
+		expect(imageArgs.registry.server).toBe('myregistry.com');
+		expect(await imageArgs.registry.username).toBe('testuser');
+		expect(await imageArgs.registry.password).toBe('testpass');
 	});
 
-	it('should create a Pulumi Docker Image resource for file type in non-dry run', async () => {
-		const nonDryRunContext = { ...mockContext, dryRun: false };
+	it('should handle missing optional generated build options', async () => {
 		const config = {
-			name: 'test-app-file-non-dry-run',
-			image: 'test-image-file-non-dry-run',
+			name: 'test-app-minimal',
+			image: 'test-image-minimal',
+			build: {
+				type: 'generated',
+				baseImage: 'node:18-alpine',
+				workspace: 'apps/test-app-minimal',
+				cmd: 'node server.js'
+			}
+		};
+
+		await dockerImagePlugin.deployHandler(config as any, mockContext as any);
+
+		expect(mockedDockerImage).toHaveBeenCalledTimes(1);
+		const [, imageArgs] = vi.mocked(mockedDockerImage).mock.calls[0];
+
+		const inlineDockerfile = imageArgs.dockerfile.inline;
+		expect(inlineDockerfile).toMatchSnapshot();
+	});
+
+	it('should create a Pulumi Docker Image resource for file type', async () => {
+		const config = {
+			name: 'test-app-file',
+			image: 'test-image-file',
 			build: {
 				type: 'file',
 				file: './path/to/Dockerfile.prod',
@@ -191,25 +131,36 @@ describe('dockerImagePlugin', () => {
 			}
 		};
 
-		await dockerImagePlugin.deployHandler(config as any, nonDryRunContext as any);
+		await dockerImagePlugin.deployHandler(config as any, mockContext as any);
 
-		expect(fs.promises.writeFile).toHaveBeenCalledTimes(0); // Should not write for file type
-		expect(mockedDockerImage).toHaveBeenCalledTimes(1); // Should create Pulumi resource
+		expect(mockedDockerImage).toHaveBeenCalledTimes(1);
+		const [imageName, imageArgs] = vi.mocked(mockedDockerImage).mock.calls[0];
 
-		const expectedImageName = 'test-image-file-non-dry-run';
-		const expectedBuildContext = './path/to/context';
-		const expectedDockerfile = './path/to/Dockerfile.prod';
+		expect(imageName).toBe('test-app-file');
+		expect(imageArgs.dockerfile.location).toBe('./path/to/Dockerfile.prod');
+		expect(imageArgs.context.location).toBe('./path/to/context');
+		expect(imageArgs.registry.server).toBe('https://index.docker.io/v1/'); // default
+	});
 
-		expect(mockedDockerImage).toHaveBeenCalledWith(
-			config.name,
-			expect.objectContaining({
-				imageName: expectedImageName,
-				build: expect.objectContaining({
-					context: expectedBuildContext,
-					dockerfile: expectedDockerfile
-				}),
-				registryAuth: undefined // No registry specified in config
-			})
-		);
+	it('should handle dryRun correctly', async () => {
+		const dryRunContext = { ...mockContext, dryRun: true };
+		const config = {
+			name: 'test-app-dry-run',
+			image: 'test-image-dry-run',
+			build: {
+				type: 'file',
+				file: './Dockerfile',
+				context: '.'
+			}
+		};
+
+		await dockerImagePlugin.deployHandler(config as any, dryRunContext as any);
+
+		expect(mockedDockerImage).toHaveBeenCalledTimes(1);
+		const [, imageArgs] = vi.mocked(mockedDockerImage).mock.calls[0];
+
+		expect(imageArgs.load).toBe(true);
+		expect(imageArgs.push).toBe(false);
+		expect(imageArgs.registry).toBeUndefined();
 	});
 });

@@ -2,8 +2,8 @@
   "name": "@6edesign/cli",
   "version": "0.1.15",
   "description": "CLI for the 6edesign/zrpc framework",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "bin": {
     "6e": "dist/index.mjs"
   },
@@ -19,7 +19,8 @@
     "dev": "tsdown --watch --sourcemap src/index.ts",
     "build": "tsdown --sourcemap src/index.ts",
     "start": "node dist/index.js",
-    "test": "vitest run --dir test"
+    "test": "vitest run --dir test",
+    "test:watch": "vitest --dir test"
   },
   "dependencies": {
     "@dagrejs/graphlib": "^2.2.4",
@@ -48,5 +49,13 @@
     "@types/handlebars": "^4.1.0",
     "tsdown": "^0.13.0",
     "vitest": "^1.6.0"
+  },
+  "module": "./dist/index.mjs",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    },
+    "./package.json": "./package.json"
   }
 }

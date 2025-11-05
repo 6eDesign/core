@@ -2,34 +2,11 @@
   "name": "@6edesign/zrpc",
   "version": "0.0.5",
   "description": "A schema-driven microservice library for building robust, type-safe APIs and clients in TypeScript or JavaScript.",
-  "exports": {
-    ".": {
-      "import": "./dist/index.mjs",
-      "require": "./dist/index.js"
-    },
-    "./client": {
-      "import": "./dist/client.mjs",
-      "require": "./dist/client.js"
-    },
-    "./messenger-client": {
-      "import": "./dist/messenger-client.mjs",
-      "require": "./dist/messenger-client.js"
-    },
-    "./router": {
-      "import": "./dist/router.mjs",
-      "require": "./dist/router.js"
-    },
-    "./zod": {
-      "import": "./dist/zod.mjs",
-      "require": "./dist/zod.js"
-    },
-    "./package.json": "./package.json"
-  },
   "publishConfig": {
     "access": "public"
   },
   "scripts": {
-    "dev": "tsdown --watch",
+    "dev": "tsdown --watch src/",
     "build": "tsdown",
     "test": "vitest run --dir test",
     "check-types": "tsc --noEmit"
@@ -72,5 +49,28 @@
   },
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
-  "types": "./dist/index.d.ts"
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    },
+    "./client": {
+      "import": "./dist/client.mjs",
+      "require": "./dist/client.js"
+    },
+    "./messenger-client": {
+      "import": "./dist/messenger-client.mjs",
+      "require": "./dist/messenger-client.js"
+    },
+    "./router": {
+      "import": "./dist/router.mjs",
+      "require": "./dist/router.js"
+    },
+    "./zod": {
+      "import": "./dist/zod.mjs",
+      "require": "./dist/zod.js"
+    },
+    "./package.json": "./package.json"
+  }
 }

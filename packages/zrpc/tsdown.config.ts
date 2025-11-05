@@ -12,5 +12,6 @@ export default defineConfig({
 	platform: 'node',
 	format: ['esm', 'cjs'],
 	dts: true,
-	exports: true
+	exports: true,
+	ignoreWatch: ['.turbo/']
 });

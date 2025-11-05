@@ -21,7 +21,7 @@ const WorkspaceCommandsSchema = z
 	})
 	.partial();
 
-interface ISecretProvider {
+export interface ISecretProvider {
 	getSecret: (name: string) => Promise<string>;
 }
 

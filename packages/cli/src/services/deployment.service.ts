@@ -74,10 +74,7 @@ export class DeploymentService {
 	private async setupPulumiBackend(): Promise<void> {
 		if (!process.env.PULUMI_BACKEND_URL) {
 			const workDir = process.cwd();
-			const localStateDir = path.join(workDir, '.pulumi');
-			// Ensure the directory exists without checking first, `recursive: true` handles this.
-			await fs.mkdir(localStateDir, { recursive: true });
-			process.env.PULUMI_BACKEND_URL = `file://${localStateDir}`;
+			process.env.PULUMI_BACKEND_URL = `file://${workDir}`;
 			console.log(
 				`PULUMI_BACKEND_URL not set, using local filesystem backend at: ${process.env.PULUMI_BACKEND_URL}`
 			);
@@ -88,7 +85,6 @@ export class DeploymentService {
 			console.log(`Using configured backend: ${process.env.PULUMI_BACKEND_URL}`);
 		}
 	}
-	ge;
 
 	private async installPlugins(stack: Stack): Promise<void> {
 		console.log('Installing plugins...');
@@ -177,7 +173,7 @@ export class DeploymentService {
 				return plugin.deployHandler(deployable, context);
 			};
 
-      console.log('Inspecting CICD engine in DeploymentService:', cicd);
+			console.log('Inspecting CICD engine in DeploymentService:', cicd);
 			if (!cicd.pulumi) {
 				throw new Error('Pulumi configuration is missing in the CICD engine.');
 			}
